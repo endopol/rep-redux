@@ -1,0 +1,21 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+%opening
+
+\begin{document}
+\section{Compatibility}
+
+\section{Code}
+The main MATLAB routine is in \texttt{decision\_script.m}.  
+An optional section of 
+Optional Graphviz visualizations 
+script \texttt{drawgraph.sh}, which runs in the bash shell,
+and uses a few non-standard graphics utilities
+\begin{verbatim}
+$ sudo apt-get install ghostscript texlive-extra-utils graphviz evince
+\end{verbatim}
+
+
+\end{document}
