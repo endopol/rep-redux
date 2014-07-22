@@ -4,7 +4,7 @@ addpath('GraphViz')
 %% Special Cases
 
 filename = 'random';
-fsm = poissonDecisionTree(1, 5);
+fsm = poissonDecisionTree(1, 9);
 
 % Special case 1 (trefoil)
 % filename = 'trefoil';
@@ -82,7 +82,7 @@ fsm = poissonDecisionTree(1, 5);
 %        [1, 3, 7], ...               % 4
 %        [1, 10, 8], ...              % 5
 %        [1, 11, 9], ...              % 6
-%        [1, 4, 10], ...              % 7     
+%        [1, 4, 10], ...     count         % 7     
 %        [], ...                      % 8
 %        [], ...                      % 9
 %        [1, 5, 11], ...              % 10
@@ -98,7 +98,7 @@ fsm = poissonDecisionTree(1, 5);
 %        [1, 2, 3], ...               % 2
 %        [1, 3, 4], ...               % 3
 %        [1, 4, 5], ...               % 4
-%        [1, 5, 6], ...               % 5
+%        [1, 5, 6], ...               %length(max_clique) 5
 %        [1, 1, 7; 2, 1, 9], ...      % 6
 %        [1, 10, 8], ...              % 7
 %        [], ...                      % 8
@@ -125,12 +125,45 @@ fsm = poissonDecisionTree(1, 5);
 % filename = 'complete_reduce';
 % fsm = {[1,1,2; 2,2,2], [1,2,2; 2,1,2]};
 
-   
-%% Compute Reduced Representations
+% Alberto paper
+% filename = 'alberto';
+% fsm = {[1, 1, 2; 2, 2, 1; 3, 2, 1], ... % 1
+%        [1, 2, 4; 3, 2, 3], ...          % 2
+%        [1, 1, 2; 2, 1, 2], ...          % 3
+%        [1, 1, 5], ...                   % 4
+%        [3, 2, 6], ...                   % 5
+%        [1, 1, 7], ...                   % 6
+%        [2, 1, 8], ...                   % 7
+%        [3, 1, 9], ...                   % 8
+%        [2, 1, 3]};                      % 9
+    
+
+%% Compute Reduced Representations (Alberto)
 fprintf('\nInitial FSM:\n')
 printFSM(fsm);
 
-[reduced, B, A] = reduce_fsm_quick(fsm);
+B = 1:length(fsm);
+reduced = fsm;
+not_done = true;
+max_clique = [];
+while not_done
+    [reduced, BB, max_clique, M] = reduce_fsm_alberto(reduced, max_clique);
+    not_done = (M<=length(max_clique));
+    B = B(BB);
+end
+
+fprintf('Reduced FSM (alberto):\n')
+printFSM(reduced)
+fprintf('\n')
+
+fprintf('# nodes in reduced FSM (alberto): %i\n', length(reduced))
+fprintf('Naive lower bound: %i\n', length(max_clique));
+reduced_alberto = reduced;
+B_alberto = B;
+
+%% Compute Reduced Representations (Alberto)
+
+[reduced, B] = reduce_fsm_quick(fsm);
 
 fprintf('Reduced FSM:\n')
 printFSM(reduced)
@@ -139,17 +172,19 @@ fprintf('\n')
 fprintf('# nodes in reduced FSM: %i\n', length(reduced))
 fprintf('Naive lower bound: %i\n', lowerbound(reduced));
 
-%% Standard Visualizations
-figure; plotFSM(fsm)
-
-
-figure; plotFSM(reduced, B)
-xlim([-2, 2])
-
+% %% Standard Visualizations
+% figure; plotFSM(fsm)
+% 
+% 
+% figure; plotFSM(reduced_alberto, B_alberto)
+% xlim([-2, 2])
+% figure; plotFSM(reduced, B)
+% xlim([-2, 2])
 
 %% OPTIONAL Graphviz Visualizations
 fprintf('\n')
 plotFSM_graphviz(fsm, sprintf('%s_orig.dot', filename));
+plotFSM_graphviz(reduced_alberto, sprintf('%s_reduced_alberto.dot', filename), B_alberto)
 plotFSM_graphviz(reduced, sprintf('%s_reduced.dot', filename), B)
 
 !sh ./drawgraph.sh

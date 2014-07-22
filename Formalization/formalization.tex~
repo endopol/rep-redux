@@ -238,6 +238,8 @@ then compute a minimal clique-covering.
 \includegraphics[height=\bfigh]{media/random_adj}
 }{}}
 \end{floatrow}
+\end{figure}
+\begin{figure}[ht]
 \begin{floatrow}
 \subfigure[Greedy Clique Covering of \ref{fig:cgam}]{
 \ffigbox[\FBwidth]{

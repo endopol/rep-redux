@@ -23,11 +23,21 @@ for FILE in $(ls *_orig.dot 2> /dev/null); do
 	ps2pdf $PSF2 $PDF2
 	pdfcrop $PDF2 $PDF2 > /dev/null
 	echo " done."
+	
+	# Process file 2
+	DOT3=${NAME}_reduced_alberto.dot
+	PSF3=${NAME}_reduced_alberto.ps
+	PDF3=${NAME}_reduced_alberto.pdf
+	echo -n "Processing $DOT3..."
+	dot -Tps $DOT3 -o $PSF3
+	ps2pdf $PSF3 $PDF3
+	pdfcrop $PDF3 $PDF3 > /dev/null
+	echo " done."
 
 	# Join files
 	OUTFILE=${NAME}.pdf
 	echo -n "Joining files..."
-	gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -o $NAME.pdf $PDF1 $PDF2
+	gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -o $NAME.pdf $PDF1 $PDF2 $PDF3
 	echo " done."
 
 	rm -f ${NAME}_*.???
