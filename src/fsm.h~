@@ -1,0 +1,58 @@
+#ifndef FSM_H
+#define FSM_H
+
+#include <map>
+#include <iostream>
+
+using namespace std;
+
+typedef int key_t;
+typedef int in_t;
+typedef int out_t;
+
+typedef struct out_pair{
+	out_t output;
+	key_t trans;
+} out_pair;
+
+typedef map<in_t, out_pair> map_t;
+
+class fsm;
+
+class state{
+private:
+	map_t io_map;
+	fsm* base;
+
+public:
+	state();
+	state(map new_io_map);	
+
+	bool add_io_map(map_t new_io_map);
+	bool add_io_map(in_t new_in, out_t new_out);
+	bool add_io_map(in_t new_in, out_t new_out);
+
+	friend ostream operator<< (ostream out, state right&); 
+};
+
+
+class fsm{
+private:	
+	map<key_t, state> states;
+
+	key_t initial state;
+
+	key_t active_state;
+public:
+	fsm();
+
+	void add_state();
+	void emplace_state(map_t new_io_map);
+	
+	out_t operate(in_t input);
+	key_t get_state():
+
+	friend ostream operator<< (ostream out, state fsm&);
+};
+
+#endif
