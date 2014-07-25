@@ -145,6 +145,43 @@ void fsm::reset(){
 	active_state = find_state(initial_state);
 }
 
+bool compatible(const state& s1, const state& s2){
+	for(io_map_t::iterator it = s1.io_map.begin(); it != s1.io_map.end(); it++)
+		if(!s2.test_map(it->first, it->second))
+			return false;
+
+	return true;
+}
+
+bool fsm::iterate_compat(){
+	for(compat_t::iterator it = compat.begin(); it != compat.end(); it++){		
+
+		set& key_set = it->second;
+
+		for(set<key>::iterator kit = key_set.begin(); kit != key_set.end(); kitt++){
+			if(!compatible(*find_state(it->first), *find_state(*kit)))
+				key_set.remove(*kit);
+		}
+	}
+}
+
+void fsm::compute_compat(){	
+
+	for(set_map_t::iterator it = set_map.begin(); it != set_map.end(); it++)
+		compat.[it->first] = set<key>;
+
+	for(compat_t::iterator it = compat.begin(); it != compat.end(); it++){
+		
+		set<key> key_set = it->second;
+
+		if(compat_t::iterator jt = compat.begin(); jt != it; jt++){
+			key_set.insert(*jt);
+		}
+	}
+
+	while(iterate_compat());
+}
+
 
 /* I/O routines */
 

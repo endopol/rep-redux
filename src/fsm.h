@@ -25,18 +25,19 @@ typedef struct outpair{
 		: output(new_output), state(new_state) {}
 } outpair;
 
-typedef map<in_t, outpair> io_map_t;
-
 
 /* STATE CLASS */
 class fsm;
 class state{
+	
+	typedef map<in_t, outpair> io_map_t;
+
 private:
 	key_t key;
 	io_map_t io_map;
 	fsm* base;
 
-	bool test_map(io_map_t new_io_map) const;
+	bool test_map(const io_map_t& new_io_map) const;
 	bool test_map(in_t new_in, outpair new_outpair) const;
 	bool test_map(in_t new_in, out_t new_out) const;
 
@@ -58,8 +59,12 @@ public:
 
 
 /* FSM CLASS */
-typedef map<key_t, state> state_map_t;
+
 class fsm{
+	
+	typedef map<key_t, state> state_map_t;
+	typedef map<key_t, set<key_t> > compat_t;
+
 private:	
 	state_map_t state_map;
 
@@ -67,10 +72,12 @@ private:
 
 	state* active_state;
 
-	map<key_t, set<key_t> > compatibility;
+	compat_t compat;
 
 	key_t get_new_key() const;
-	void compute_compatibility();
+
+	bool iterate_compat();
+	void compute_compat();
 public:
 	state* add_state();
 	state* add_state(key_t new_key);
