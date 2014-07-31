@@ -25,6 +25,8 @@ int main(){
 	stringstream ss(sequence);
 	vector<in_t> v_in = read_sequence(ss, -1);
 	f.operate(v_in, cout);
+
+	f.compute_compat();
 }
 
 vector<in_t> read_sequence(istream& in, int n){

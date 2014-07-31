@@ -27,34 +27,31 @@ typedef struct outpair{
 
 
 /* STATE CLASS */
+typedef map<key_t, set<key_t> > compat_t;
+typedef map<in_t, outpair> io_map_t;
+
 class fsm;
-class state{
-	
-	typedef map<in_t, outpair> io_map_t;
+class state{		
 
 private:
 	key_t key;
 	io_map_t io_map;
 	fsm* base;
 
-	bool test_map(const io_map_t& new_io_map) const;
-	bool test_map(in_t new_in, outpair new_outpair) const;
-	bool test_map(in_t new_in, out_t new_out) const;
+	bool test_io_map(const state& s) const;
+	bool test_io_map(in_t new_in, outpair new_outpair) const;	
 
 public:
 	state(fsm* new_base, key_t new_key);
 	state(fsm* new_base, key_t new_key, io_map_t new_io_map);	
 
-	bool add_io_map(io_map_t new_io_map);
+	bool add_io_map(const state& s);
 	bool add_io_map(in_t new_in, outpair new_outpair);
-	bool add_io_map(in_t new_in, out_t new_out);
 
-	outpair map(in_t input);
+	outpair operator()(in_t input) const;
 
 	friend class fsm;
 	friend ostream& operator<< (ostream& out, const state& right);
-	friend bool compatible(const state& s1, const state& s2);
-
 };
 
 
@@ -62,8 +59,7 @@ public:
 
 class fsm{
 	
-	typedef map<key_t, state> state_map_t;
-	typedef map<key_t, set<key_t> > compat_t;
+	typedef map<key_t, state> state_map_t;	
 
 private:	
 	state_map_t state_map;
@@ -77,10 +73,12 @@ private:
 	key_t get_new_key() const;
 
 	bool iterate_compat();
-	void compute_compat();
+	bool test_compat(key_t k1, key_t k2) const;
+	bool test_compat(const state& s1, const state& s2) const;	
+
 public:
-	state* add_state();
-	state* add_state(key_t new_key);
+	state& add_state();
+	state& add_state(key_t new_key);
 	state* find_state(key_t query_key);
 	
 	void reset();
@@ -88,11 +86,13 @@ public:
 	vector<outpair> operate(const vector<in_t>& in_vec, ostream& out);
 	key_t get_active_state() const;
 
-	bool compatible(key_t k1, key_t k2);
 	void combine(key_t k1, key_t k2);
 
 	friend ostream& operator<< (ostream& out, const fsm& right);
 	friend istream& operator>> (istream& in, fsm& right);	
+
+	void compute_compat();
+	void print_compat(ostream& out);
 };
 
 #endif
