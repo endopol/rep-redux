@@ -13,7 +13,7 @@ state::state(fsm* new_base, key_t new_key, io_map_t new_io_map){
 
 /* test_map tests whether a new mapping or table of mappings interferes with existing ones */
 bool state::test_io_map(in_t new_in, outpair new_op) const{
-	io_map_t::const_iterator it = io_map.find(new_in);
+	io_map_t::const_iterator it = find(new_in);
 	if(it==io_map.end())
 		return true;
 
@@ -57,7 +57,7 @@ ostream& operator<< (ostream& out, const state& right){
 }
 
 outpair state::operator()(in_t input) const{
-	io_map_t::const_iterator it = io_map.find(input);
+	io_map_t::const_iterator it = find(input);
 
 	if(it!=io_map.end())
 		return it->second;
@@ -65,4 +65,14 @@ outpair state::operator()(in_t input) const{
 		return outpair(UNDEFINED, key);
 }
 
+io_map_t::iterator state::find(in_t input){
+	return io_map.find(input);
+}
 
+io_map_t::iterator state::begin(){
+	return io_map.begin();
+}
+
+io_map_t::iterator state::end(){
+	return io_map.end();
+}

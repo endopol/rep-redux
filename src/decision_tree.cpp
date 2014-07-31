@@ -1,52 +1,66 @@
 #include "decision_tree.h"
-using namespace decision_tree;
 
-df_iterator begin(){
-	df_iterator it;
+decision_tree::df_iterator decision_tree::begin(){
+	decision_tree::df_iterator it(this);
 	while(it.step_in());
 	return it;
 }
 
-df_iterator end(){
-	df_iterator it(this);	
+decision_tree::df_iterator decision_tree::end(){
+	decision_tree::df_iterator it(this);	
 	return it;
 }
 
-df_iterator::df_iterator(decision_tree* new_base){
+decision_tree::df_iterator::df_iterator(decision_tree* new_base){
 	base = new_base;
+	root = &(base->find_state(base->initial_state));
 }
 
-bool df_iterator::step_in(){
-	state* top = stack.peek();
-	const io_map_t& io_map = top.first->io_map;
-	io_map_t::const_iterator it = io_map.begin();
-	if(it==io_map.end())
+bool decision_tree::df_iterator::step_in(){	
+	state* s = top();
+	io_map_t::const_iterator it = s->begin();
+	if(it==s->end())
 		return false;
 
 	return step_in(it->first);
 }
 
-bool df_iterator::step_in(in_t in){
-	state* top = stack.peek();
-	outpair op = (*top)(in);
-	if(op.output==UNDEFINED)
-		return false;
+bool decision_tree::df_iterator::step_in(in_t in){	
+	state* s = top();
+	io_map_t::const_iterator it = s->find(in);
+	if(it==io_map.end())
+		return false;	
 	
 	state* next = &(base->find_state(op.state));
-	stack.push_back(next);
+	stack.push_back(trace(it, next));
 	return true;
 }
 
-int df_iterator::get_depth(){
+int decision_tree::df_iterator::get_depth(){
 	return stack.size();
 }
 
+state* decision_tree::df_iterator::get_top() const{
+	if(stack.size==0)
+		return root;
 
-void df_iterator::operator++(){
-
+	trace t = stack.peek();
+	return t.second;
 }
 
-friend bool operator<=(const df_iterator& it1, const df_iterator& it2){
+void decision_tree::df_iterator::operator++(){
+	while(stack.size()>0){
+		io_map_t::iterator& it = stack.pop_back().first;
+		it++;
+		if(it!=top()->io_map.end())
+			break;
+	}
+
+	while(step_in());
+}
+
+friend bool operator<=(const decision_tree::df_iterator& it1, 
+		decision_tree::const df_iterator& it2){
 	for(int i=0; i<it1.stack.size; i++)
 		if(it1[i]<it2[i])
 			return true;
@@ -57,7 +71,8 @@ friend bool operator<=(const df_iterator& it1, const df_iterator& it2){
 }
 
 
-friend bool operator==(const df_iterator& it1, const df_iterator& it2){
+friend bool operator==(const decision_tree::df_iterator& it1, 
+		decision_tree::const df_iterator& it2){
 	if(it1.stack.size()!=it2.stack.size())
 		return false;
 
@@ -67,3 +82,4 @@ friend bool operator==(const df_iterator& it1, const df_iterator& it2){
 	
 	return true;
 } 
+

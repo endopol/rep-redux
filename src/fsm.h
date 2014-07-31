@@ -33,7 +33,7 @@ typedef map<in_t, outpair> io_map_t;
 class fsm;
 class state{		
 
-private:
+protected:
 	key_t key;
 	io_map_t io_map;
 	fsm* base;
@@ -49,6 +49,10 @@ public:
 	bool add_io_map(in_t new_in, outpair new_outpair);
 
 	outpair operator()(in_t input) const;
+	io_map_t::iterator find(in_t input);
+	io_map_t::iterator begin();
+	io_map_t::iterator end();
+	io_map_t::const_iterator end() const;
 
 	friend class fsm;
 	friend ostream& operator<< (ostream& out, const state& right);
@@ -61,7 +65,7 @@ class fsm{
 	
 	typedef map<key_t, state> state_map_t;	
 
-private:	
+protected:	
 	state_map_t state_map;
 
 	key_t initial_state;
@@ -79,7 +83,7 @@ private:
 public:
 	state& add_state();
 	state& add_state(key_t new_key);
-	state* find_state(key_t query_key);
+	state& find_state(key_t query_key);
 	
 	void reset();
 	outpair operate(in_t input, ostream& out);
