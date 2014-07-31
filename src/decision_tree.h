@@ -13,7 +13,7 @@ public:
 	df_iterator end();
 };
 
-typedef pair<io_map_t::iterator, state*> trace;
+typedef pair<io_map_t::const_iterator, state*> trace;
 
 class decision_tree::df_iterator{
 private:	
@@ -30,9 +30,11 @@ public:
 
 	int get_depth() const;
 
-	bool operator++();
+	void operator++();
 
 	friend bool operator<=(const df_iterator& it1, const df_iterator& it2);
+	friend bool operator==(const decision_tree::df_iterator& it1, 
+		const decision_tree::df_iterator& it2);
 
 	friend class decision_tree;
 };

@@ -49,9 +49,9 @@ public:
 	bool add_io_map(in_t new_in, outpair new_outpair);
 
 	outpair operator()(in_t input) const;
-	io_map_t::iterator find(in_t input);
-	io_map_t::iterator begin();
-	io_map_t::iterator end();
+	io_map_t::const_iterator find(in_t input) const;
+	io_map_t::const_iterator begin();
+	io_map_t::const_iterator end();
 	io_map_t::const_iterator end() const;
 
 	friend class fsm;

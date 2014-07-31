@@ -65,14 +65,14 @@ outpair state::operator()(in_t input) const{
 		return outpair(UNDEFINED, key);
 }
 
-io_map_t::iterator state::find(in_t input){
+io_map_t::const_iterator state::find(in_t input) const{
 	return io_map.find(input);
 }
 
-io_map_t::iterator state::begin(){
+io_map_t::const_iterator state::begin(){
 	return io_map.begin();
 }
 
-io_map_t::iterator state::end(){
+io_map_t::const_iterator state::end(){
 	return io_map.end();
 }
