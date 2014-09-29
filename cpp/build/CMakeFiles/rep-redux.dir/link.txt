@@ -1,1 +1,0 @@
-/usr/bin/c++   -g    CMakeFiles/rep-redux.dir/src/main.cpp.o  -o ../bin/rep-redux -rdynamic ../lib/libtree.a ../lib/libfsm.a ../lib/libstate.a 

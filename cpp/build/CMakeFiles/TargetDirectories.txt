@@ -1,4 +1,0 @@
-/home/josh/git/rep-redux/cpp/build/CMakeFiles/fsm.dir
-/home/josh/git/rep-redux/cpp/build/CMakeFiles/rep-redux.dir
-/home/josh/git/rep-redux/cpp/build/CMakeFiles/state.dir
-/home/josh/git/rep-redux/cpp/build/CMakeFiles/tree.dir
