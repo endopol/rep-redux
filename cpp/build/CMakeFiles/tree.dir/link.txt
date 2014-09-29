@@ -1,0 +1,2 @@
+/usr/bin/ar cr ../lib/libtree.a  CMakeFiles/tree.dir/src/decision_tree.cpp.o
+/usr/bin/ranlib ../lib/libtree.a

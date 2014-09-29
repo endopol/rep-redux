@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "~/git/rep-redux/cpp"
+		}
+	],
+
+	"settings":{
+		"sublimegdb_workingdir": "bin",
+
+		// NOTE: You MUST provide --interpreter=mi for the plugin to work
+		// "commandline": "gdb --interpreter=mi ./executable",
+		"sublimegdb_commandline": "gdb --interpreter=mi ./rep-redux"
+	}
+}

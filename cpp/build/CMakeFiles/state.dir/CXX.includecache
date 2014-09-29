@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/fsm.h
+map
+-
+set
+-
+iostream
+-
+string
+-
+fstream
+-
+sstream
+-
+vector
+-
+algorithm
+-
+
+/home/josh/git/rep-redux/cpp/src/state.cpp
+fsm.h
+/home/josh/git/rep-redux/cpp/src/fsm.h
+

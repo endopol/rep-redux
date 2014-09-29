@@ -1,0 +1,2 @@
+/usr/bin/ar cr ../lib/libfsm.a  CMakeFiles/fsm.dir/src/fsm.cpp.o
+/usr/bin/ranlib ../lib/libfsm.a

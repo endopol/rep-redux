@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/decision_tree.h
+fsm.h
+../include/fsm.h
+
+../include/fsm.h
+map
+-
+set
+-
+iostream
+-
+string
+-
+fstream
+-
+sstream
+-
+vector
+-
+algorithm
+-
+
+/home/josh/git/rep-redux/cpp/src/main.cpp
+decision_tree.h
+/home/josh/git/rep-redux/cpp/src/decision_tree.h
+fstream
+-
+
