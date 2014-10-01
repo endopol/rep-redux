@@ -43,7 +43,6 @@ typedef struct outpair{
 
 
 /* STATE CLASS */
-typedef map<skey_t, set<skey_t> > compat_t;
 typedef map<in_t, outpair> io_map_t;
 
 class fsm;
@@ -63,6 +62,7 @@ public:
 	bool test_io_map(const state& s) const;
 	bool add_io_map(const state& s);
 	bool add_io_map(in_t new_in, outpair new_outpair);
+	bool add_io_map(in_t new_in, outpair new_outpair, bool replace);
 
 	outpair operator()(in_t input) const;
 	virtual io_map_t::const_iterator find(in_t input) const;
@@ -73,16 +73,20 @@ public:
 
 	skey_t get_key() const {return key;}
 	int get_size() const {return io_map.size();}
+	io_map_t& get_io_map() {return io_map;}
 
 	friend class fsm;
 };
 
 
 
+typedef map<skey_t, set<skey_t> > compat_t;
+typedef map<skey_t, state> state_map_t;
+
 /* FSM CLASS */
 class fsm{
 	
-	typedef map<skey_t, state> state_map_t;
+
 
 protected:	
 	state_map_t state_map;
@@ -98,9 +102,12 @@ protected:
 	bool test_compat(const state& s1, const state& s2) const;
 
 public:
-	virtual state& add_state();
-	virtual state& add_state(skey_t new_key);
-	virtual state& find_state(skey_t query_key);
+	fsm(){}
+	fsm(string filename);
+
+	state& add_state();
+	state& add_state(skey_t new_key);
+	state& find_state(skey_t query_key);
 
 	// Public operating interface
 	void reset();
@@ -108,6 +115,7 @@ public:
 	vector<outpair> operate(const vector<in_t>& in_vec, ostream& out);
 	skey_t get_active_state() const;
 	skey_t get_initial_state() const;
+	void set_initial_state(skey_t new_initial_state){ initial_state = new_initial_state; }
 
 	void combine(skey_t k1, skey_t k2);
 
@@ -116,8 +124,12 @@ public:
 
 	void compute_compat();
 	void print_compat(ostream& out);
+	const compat_t& get_compat();
+	state_map_t& get_state_map(){ return state_map; }
+	int get_size() const { return state_map.size(); }
 
-	void save_dot(ostream& out);
+	void save_dot(ostream& out) const;
+	friend void save_dot(string filename, const fsm& right);
 };
 
 #endif

@@ -30,10 +30,9 @@ public:
 	df_iterator(fsm* new_base, int new_depth);
 	df_iterator(fsm* new_base, state* first_state, int new_depth);
 
-	void split(const df_iterator& right);
-
 	trace& top();
 	state& top_state();
+	io_map_t::const_iterator& last_iterator();
 
 	int get_depth() const;
 

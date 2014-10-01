@@ -208,19 +208,8 @@ state& df_iterator::top_state(){
 	else return *(top_trace.second);
 }
 
-void df_iterator::split(const df_iterator& right){
-	df_iterator ix(base, max_depth);
-
-	int common_depth = min(get_depth(), right.get_depth());
-
-
-	vector<trace> new_stack;
-		
-
-	for(int i=0; i<common_depth && stack[i]==right.stack[i]; i++)
-		new_stack.push_back(stack[i]);
-
-	stack = new_stack;
+io_map_t::const_iterator& df_iterator::last_iterator(){
+	return stack[get_depth()-2].first;
 }
 
 bool df_iterator::operator++(){

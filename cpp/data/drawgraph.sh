@@ -3,12 +3,12 @@ export LD_LIBRARY_PATH=/lib/x86_64-linux-gnu/
 
 # Clean directory if -f tag given
 if [ "$1" == "-f" ]; then
-	rm */*svg */*pdf
+	rm -f */output/*svg */output/*pdf
 fi
 
 # Run dot on all dotfiles
 for DIR in $(ls -d */ 2> /dev/null); do
-	cd $DIR;
+	cd $DIR/output;
 	for DOT in $(ls *.dot 2> /dev/null); do
 
 		NAME=$(basename $DOT .dot)
@@ -24,5 +24,5 @@ for DIR in $(ls -d */ 2> /dev/null); do
 			evince $PDF 2>/dev/null &
 		fi
 	done
-	cd ..
+	cd ../..
 done

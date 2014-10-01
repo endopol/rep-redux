@@ -15,7 +15,10 @@ add_library(state	STATIC	src/state.cpp)
 add_library(fsm		STATIC	src/fsm.cpp)
 add_library(tree	STATIC	src/decision_tree.cpp)
 add_library(censi	STATIC	src/reduce_censi.cpp)
+add_library(josh	STATIC	src/reduce_josh.cpp)
+add_library(emulation	STATIC	src/emulation.cpp)
+add_library(exhaustive	STATIC	src/reduce_josh_exhaustive.cpp)
 
 add_executable(rep-redux src/main.cpp)
 target_link_libraries(rep-redux 
-	censi tree fsm state)
+	exhaustive emulation josh censi tree fsm state)

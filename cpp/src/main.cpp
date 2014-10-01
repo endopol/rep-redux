@@ -1,36 +1,33 @@
-#include "decision_tree.h"
-#include "reduce_censi.cpp"
+#include "reduce_josh_exhaustive.cpp"
+#include "emulation.cpp"
 #include <fstream>
+
 
 vector<in_t> read_sequence(istream& in, int n);
 
 int main(){
-
-	fsm f;
-
 	string 	database = "alberto",
-			dir = "../data/" + database + "/";
+			indir = "../data/" + database + "/",
+			outdir = indir + "/output/";
 
-	string infile = dir + database + ".fsm";
-	ifstream in(infile.c_str());
-	in >> f;
-	in.close();
+	string infile = indir + database + ".fsm";
+	fsm f(infile);
 
-	cout << "\nThe stored FSM:\n\n" << f << endl;
-	string fsm_dot_file = dir + database + ".dot";	
-	ofstream fsm_dot_out(fsm_dot_file.c_str());
-	f.save_dot(fsm_dot_out);
-	fsm_dot_out.close();
-	
-	decision_tree g(f, 4);
+	// string treefile1 = outdir + database + "1.dot";
+	decision_tree g1(f, 10);
+	cout << "The first tree:\n\n" << g1 << endl;
+	// save_dot(treefile1, g1);
 
-	// cout << "\nThe linearized FSM:\n\n" << g << endl;
-	// string tree_dot_file = dir + database + "_tree.dot";	
-	// ofstream tree_dot_out(tree_dot_file.c_str());
-	// f.save_dot(tree_dot_out);
-	// tree_dot_out.close();
+	fsm g2 = reduce_josh_exhaustive(f);
+	cout << "The reduced tree:\n\n"  << g2 << endl;
+	// string treefile2 = outdir + database + "2.dot";
+	// save_dot(treefile2, decision_tree(reduce_josh(f),5));
 
-	reduce_censi(g, 4);
+	int emulation_depth = 10;
+	if(emulates(g2, g1, emulation_depth))
+		cout << "Emulates at depth " << emulation_depth << ".\n";
+	else
+		cout << "Fails to emulate at depth " << emulation_depth << ".\n";
 
 	return 0;
 }
@@ -43,4 +40,5 @@ vector<in_t> read_sequence(istream& in, int n){
 
 	return in_vec;
 }
+
 

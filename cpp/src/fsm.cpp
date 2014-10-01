@@ -36,6 +36,12 @@ ostream& operator<<(ostream& out, const skey_t& right){
 
 /* FSM member functions */
 
+fsm::fsm(string filename){
+	ifstream in(filename.c_str());
+	in >> (*this);
+	in.close();
+}
+
 state& fsm::add_state(){
 	skey_t new_key(state_map.size());
 	// cout << "Created key " << new_key << endl;
@@ -123,7 +129,7 @@ bool fsm::test_compat(skey_t k1, skey_t k2) const{
 
 
 bool fsm::iterate_compat(){
-	print_compat(cout);
+	//print_compat(cout);
 
 	bool changed = false;
 	for(compat_t::iterator it = compat.begin(); it != compat.end(); it++){		
@@ -154,6 +160,9 @@ void fsm::compute_compat(){
 	while(iterate_compat());
 }
 
+const compat_t& fsm::get_compat(){
+	return compat;
+}
 
 /* I/O routines */
 
@@ -197,8 +206,8 @@ istream& operator>> (istream& in, fsm& right){
 
 ostream& operator<< (ostream& out, const fsm& right){
 	out << "fsm " << right.initial_state << endl;
-	fsm::state_map_t state_map = right.state_map;
-	for(fsm::state_map_t::const_iterator sit = state_map.begin(); sit != state_map.end(); sit++){
+	state_map_t state_map = right.state_map;
+	for(state_map_t::const_iterator sit = state_map.begin(); sit != state_map.end(); sit++){
 		const state& curr_state = sit->second;
 		out << curr_state;
 	}
@@ -216,7 +225,14 @@ void fsm::print_compat(ostream& out){
 	out << endl;
 }
 
-void fsm::save_dot(ostream& out){
+void save_dot(string filename, const fsm& right){
+	ofstream out(filename.c_str());
+	right.save_dot(out);
+	out.close();
+}
+
+
+void fsm::save_dot(ostream& out) const{
 	const int width  = 80, height = 10;
 
 	string arctxt = "->",
@@ -229,7 +245,7 @@ void fsm::save_dot(ostream& out){
 
 	int node_index = 0;
 	map<skey_t, int> node_indices;
-	for(state_map_t::iterator it = state_map.begin(); it!=state_map.end(); it++){		
+	for(state_map_t::const_iterator it = state_map.begin(); it!=state_map.end(); it++){		
 		skey_t found_key = it->first;
 		node_indices[found_key] = node_index;
 		out << "  " << node_index << " [label=\"" << found_key << "\", shape=\"circle\"];\n";
@@ -237,9 +253,9 @@ void fsm::save_dot(ostream& out){
 	}
 
 	int node1_index = 0;
-	for(state_map_t::iterator it = state_map.begin(); it!=state_map.end(); it++){
+	for(state_map_t::const_iterator it = state_map.begin(); it!=state_map.end(); it++){
 		map<skey_t, string> edge_labels;
-		state& found_state = it->second;
+		const state& found_state = it->second;
 		io_map_t found_map = found_state.io_map;
 		for(io_map_t::iterator jt = found_map.begin(); jt!=found_map.end(); jt++){
 			outpair op = jt->second;
@@ -249,7 +265,7 @@ void fsm::save_dot(ostream& out){
 		}
 		for(map<skey_t, string>::iterator jt = edge_labels.begin(); jt!=edge_labels.end(); jt++){			
 			int node2_index = node_indices[jt->first];
-			char edgestring[100];		
+			char edgestring[200];		
 			sprintf(edgestring, edgeformat.c_str(), node1_index, node2_index, jt->second.c_str());
 			out << edgestring;			
 		}		

@@ -19,10 +19,18 @@ bool state::test_io_map(in_t new_in, outpair new_op) const{
 	return found_op.output == new_op.output;
 }
 
+// bool state::test_io_map(const state& s) const{
+// 	const io_map_t& new_map = s.io_map;
+// 	for(io_map_t::const_iterator it = new_map.begin(); it != new_map.end(); it++)
+// 		if(!test_io_map(it->first, it->second))
+// 			return false;
+// 	return true;
+// }
+
+
 bool state::test_io_map(const state& s) const{
-	const io_map_t& new_map = s.io_map;
-	for(io_map_t::const_iterator it = new_map.begin(); it != new_map.end(); it++)
-		if(!test_io_map(it->first, it->second))
+	for(io_map_t::const_iterator it = io_map.begin(); it != io_map.end(); it++)
+		if(!s.test_io_map(it->first, it->second))
 			return false;
 	return true;
 }
@@ -39,12 +47,19 @@ bool state::add_io_map(const state& s){
 	return true;
 }
 
-bool state::add_io_map(in_t new_in, outpair new_outpair){
+bool state::add_io_map(in_t new_in, outpair new_outpair, bool replace){
 	if(!test_io_map(new_in, new_outpair))
 		return false;
 
+	if(io_map.find(new_in)!=io_map.end() && !replace)
+		return true;
+
 	io_map[new_in] = new_outpair;
 	return true;
+}
+
+bool state::add_io_map(in_t new_in, outpair new_outpair){
+	return add_io_map(new_in, new_outpair, true);	
 }
 
 ostream& operator<< (ostream& out, const state& right){	
