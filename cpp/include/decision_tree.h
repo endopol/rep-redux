@@ -6,14 +6,15 @@
 class decision_tree: public fsm{
 
 public:	
+	decision_tree(){}
 	decision_tree(fsm in, int depth);
 
 	void write_tree(ostream& out, int depth);
 	void read_tree(istream& in, int depth);	
 };
 
-typedef pair<io_map_t::const_iterator, state*> trace;
-ostream& operator<<(ostream& out, const trace& right);
+typedef pair<io_map_t::const_iterator, state*> trace_t;
+ostream& operator<<(ostream& out, const trace_t& right);
 
 /* DEPTH-FIRST ITERATOR CLASS */
 class df_iterator{
@@ -22,7 +23,7 @@ private:
 	fsm* base;
 	state* root, curr;
 
-	vector<trace> stack;
+	vector<trace_t> stack;
 	bool step_in(in_t in);
 public:
 	bool step_in();
@@ -30,7 +31,7 @@ public:
 	df_iterator(fsm* new_base, int new_depth);
 	df_iterator(fsm* new_base, state* first_state, int new_depth);
 
-	trace& top();
+	trace_t& top();
 	state& top_state();
 	io_map_t::const_iterator& last_iterator();
 

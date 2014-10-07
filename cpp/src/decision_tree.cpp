@@ -1,6 +1,6 @@
 #include "decision_tree.h"
 
-ostream& operator<<(ostream& out, const trace& right){
+ostream& operator<<(ostream& out, const trace_t& right){
 	if(right.second!=NULL)
 		out << right.second->get_key();
 	else
@@ -150,7 +150,7 @@ df_iterator::df_iterator(fsm* new_base, int new_depth){
 	max_depth = new_depth;
 	root = &(base->find_state(base->get_initial_state()));
 
-	stack.push_back(trace(root->begin(), root));
+	stack.push_back(trace_t(root->begin(), root));
 }
 
 df_iterator::df_iterator(fsm* new_base, state* first_state, int new_depth){
@@ -158,7 +158,7 @@ df_iterator::df_iterator(fsm* new_base, state* first_state, int new_depth){
 	max_depth = new_depth;
 	root = first_state;
 
-	stack.push_back(trace(root->begin(), root));	
+	stack.push_back(trace_t(root->begin(), root));	
 }
 
 bool df_iterator::step_in(){
@@ -174,7 +174,7 @@ bool df_iterator::step_in(){
 }
 
 bool df_iterator::step_in(in_t in){	
-	trace& top_trace = top();
+	trace_t& top_trace = top();
 	state* s = top_trace.second;
 	io_map_t::const_iterator it = s->find(in);
 	if(it==s->end())
@@ -182,7 +182,7 @@ bool df_iterator::step_in(in_t in){
 	
 	skey_t next_key = it->second.state;
 	state* next = &(base->find_state(next_key));
-	stack.push_back(trace(next->begin(), next));
+	stack.push_back(trace_t(next->begin(), next));
 	return (next->get_size()>0);
 }
 
@@ -194,15 +194,15 @@ int df_iterator::get_depth() const{
 	return stack.size();
 }
 
-trace& df_iterator::top(){
+trace_t& df_iterator::top(){
 	if(stack.size()==0)
-		return (* (trace*) NULL);
+		return (* (trace_t*) NULL);
 	
 	return stack.back();
 }
 
 state& df_iterator::top_state(){
-	trace& top_trace = top();
+	trace_t& top_trace = top();
 	if(&top_trace==NULL)
 		return (* (state*) NULL);
 	else return *(top_trace.second);
@@ -299,7 +299,7 @@ bool operator==(const df_iterator& it1, const df_iterator& it2){
 ostream& operator<<(ostream& out, const df_iterator& it){
 	out << "Stack depth " << it.get_depth() << ": ";
 	for(int i=0; i<it.get_depth(); i++){
-		trace frame = it.stack[i];
+		trace_t frame = it.stack[i];
 
 		state* curr_state = frame.second; 
 		out << curr_state->get_key() << "(";

@@ -12,7 +12,6 @@
 
 using namespace std;
 
-
 /* INPUT/OUTPUT CLASSES */
 class skey_t{
 	int keynum;
@@ -26,6 +25,8 @@ public:
 	friend istream& operator>>(istream& in, skey_t& right);	
 	friend ostream& operator<<(ostream& out, const skey_t& right);	
 };
+
+
 
 typedef char in_t;
 typedef int out_t;
@@ -79,14 +80,12 @@ public:
 };
 
 
-
+typedef vector<set<skey_t> > cover_t;
 typedef map<skey_t, set<skey_t> > compat_t;
 typedef map<skey_t, state> state_map_t;
 
 /* FSM CLASS */
 class fsm{
-	
-
 
 protected:	
 	state_map_t state_map;
@@ -95,9 +94,6 @@ protected:
 
 	state* active_state;
 
-	compat_t compat;
-
-	bool iterate_compat();	// Run one iteration of the compat computation
 	bool test_compat(skey_t k1, skey_t k2) const;
 	bool test_compat(const state& s1, const state& s2) const;
 
@@ -122,14 +118,17 @@ public:
 	friend ostream& operator<<(ostream& out, const fsm& right);
 	friend istream& operator>>(istream& in, fsm& right);	
 
-	void compute_compat();
-	void print_compat(ostream& out);
-	const compat_t& get_compat();
+	friend compat_t compute_compat(fsm& right);
+
 	state_map_t& get_state_map(){ return state_map; }
 	int get_size() const { return state_map.size(); }
 
 	void save_dot(ostream& out) const;
 	friend void save_dot(string filename, const fsm& right);
 };
+
+ostream& operator<<(ostream& out, const compat_t& right);
+ostream& operator<<(ostream& out, const cover_t& right);
+fsm reduce(const fsm& orig, const cover_t& X);
 
 #endif

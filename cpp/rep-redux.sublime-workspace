@@ -4,20 +4,104 @@
 		"selected_items":
 		[
 			[
-				"compat",
-				"compat_t"
+				"las",
+				"last_key"
 			],
 			[
-				"new",
-				"new_key"
+				"last",
+				"last_key"
+			],
+			[
+				"lit",
+				"list_advance"
+			],
+			[
+				"nex",
+				"next_key"
+			],
+			[
+				"free",
+				"free_keys"
+			],
+			[
+				"cover_",
+				"cover_exact"
+			],
+			[
+				"reduc",
+				"reduce_exact"
+			],
+			[
+				"get",
+				"get_state_map"
+			],
+			[
+				"io_",
+				"io_map_t"
+			],
+			[
+				"find",
+				"find_state"
 			],
 			[
 				"add",
-				"add_to_clique"
+				"add_io_map"
+			],
+			[
+				"clique",
+				"clique_map"
+			],
+			[
+				"state_map",
+				"state_map_t"
 			],
 			[
 				"new_",
-				"new_key"
+				"new_state"
+			],
+			[
+				"new",
+				"new_state"
+			],
+			[
+				"redu",
+				"reduce_exact"
+			],
+			[
+				"mincov",
+				"MINCOV_DIR"
+			],
+			[
+				"erase",
+				"erase_list"
+			],
+			[
+				"era",
+				"erase_list"
+			],
+			[
+				"e",
+				"emulates"
+			],
+			[
+				"emul",
+				"emulation"
+			],
+			[
+				"em",
+				"emulation_depth"
+			],
+			[
+				"cli",
+				"clique_map"
+			],
+			[
+				"se",
+				"second"
+			],
+			[
+				"compat",
+				"compat_t"
 			],
 			[
 				"beg",
@@ -42,10 +126,6 @@
 			[
 				"re",
 				"redux"
-			],
-			[
-				"get",
-				"get_key"
 			],
 			[
 				"old",
@@ -116,10 +196,6 @@
 				"edgestring"
 			],
 			[
-				"io_",
-				"io_map_t"
-			],
-			[
 				"be",
 				"begin"
 			],
@@ -135,7 +211,15 @@
 			"file": "src/main.cpp",
 			"settings":
 			{
-				"buffer_size": 559,
+				"buffer_size": 1227,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/reduce_exact.cpp",
+			"settings":
+			{
+				"buffer_size": 3329,
 				"line_ending": "Unix"
 			}
 		},
@@ -143,23 +227,15 @@
 			"file": "CMakeLists.txt",
 			"settings":
 			{
-				"buffer_size": 713,
+				"buffer_size": 1073,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/reduce_josh.cpp",
+			"file": "src/reduce_greedy.cpp",
 			"settings":
 			{
-				"buffer_size": 1004,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/decision_tree.cpp",
-			"settings":
-			{
-				"buffer_size": 7058,
+				"buffer_size": 1332,
 				"line_ending": "Unix"
 			}
 		},
@@ -167,15 +243,7 @@
 			"file": "src/state.cpp",
 			"settings":
 			{
-				"buffer_size": 2195,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/reduce_censi.cpp",
-			"settings":
-			{
-				"buffer_size": 2917,
+				"buffer_size": 2419,
 				"line_ending": "Unix"
 			}
 		},
@@ -183,7 +251,15 @@
 			"file": "src/fsm.cpp",
 			"settings":
 			{
-				"buffer_size": 6356,
+				"buffer_size": 7816,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/reduce_josh.cpp",
+			"settings":
+			{
+				"buffer_size": 1677,
 				"line_ending": "Unix"
 			}
 		}
@@ -191,9 +267,13 @@
 	"build_system": "Packages/Makefile/Make.sublime-build",
 	"command_palette":
 	{
-		"height": 285.0,
+		"height": 268.0,
 		"selected_items":
 		[
+			[
+				"package",
+				"Package Control: Install Package"
+			],
 			[
 				"sublimeg",
 				"Preferences: SublimeGDB Settings – Default"
@@ -252,16 +332,23 @@
 	"expanded_folders":
 	[
 		"/home/josh/git/rep-redux/cpp",
+		"/home/josh/git/rep-redux/cpp/data",
+		"/home/josh/git/rep-redux/cpp/include",
 		"/home/josh/git/rep-redux/cpp/src"
 	],
 	"file_history":
 	[
+		"/home/josh/git/rep-redux/cpp/rep-redux.sublime-project",
+		"/build/buildd/eglibc-2.19/nptl/sysdeps/unix/sysv/linux/raise.c",
+		"/home/josh/git/rep-redux/cpp/src/reduce_exact.cpp",
 		"/home/josh/git/rep-redux/cpp/src/reduce_censi.cpp",
+		"/home/josh/git/rep-redux/cpp/src/reduce_josh_exhaustive.cpp",
+		"/home/josh/git/rep-redux/cpp/src/emulation.cpp",
+		"/home/josh/git/rep-redux/cpp/src/decision_tree.cpp",
+		"/home/josh/git/rep-redux/cpp/CMakeLists.txt",
 		"/usr/include/c++/4.6/bits/stl_tree.h",
 		"/home/josh/.config/sublime-text-3/Packages/SublimeGDB/SublimeGDB.sublime-settings",
 		"/home/josh/git/rep-redux/cpp/Makefile",
-		"/home/josh/git/rep-redux/cpp/rep-redux.sublime-project",
-		"/build/buildd/eglibc-2.19/nptl/sysdeps/unix/sysv/linux/raise.c",
 		"/home/josh/git/rep-redux/src/reduce_censi.cpp",
 		"/home/josh/.config/sublime-text-3/Packages/User/SublimeGDB.sublime-settings",
 		"/home/josh/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
@@ -288,6 +375,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"print_compat",
+			"CMAKE_INCLUDE_PATH",
+			"; ",
+			" ",
+			"trace",
+			"cout",
+			":\";",
 			"add_io",
 			", true)",
 			"advance_over",
@@ -318,6 +412,11 @@
 		"regex": false,
 		"replace_history":
 		[
+			" ",
+			"",
+			";",
+			"; ",
+			"trace_t",
 			")",
 			"step_over",
 			"step_out()",
@@ -349,15 +448,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 559,
+						"buffer_size": 1227,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								352,
-								352
+								63,
+								63
 							]
 						],
 						"settings":
@@ -369,29 +468,30 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "CMakeLists.txt",
+					"file": "src/reduce_exact.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 713,
+						"buffer_size": 3329,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								713,
-								713
+								328,
+								328
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -402,47 +502,47 @@
 				},
 				{
 					"buffer": 2,
-					"file": "src/reduce_josh.cpp",
+					"file": "CMakeLists.txt",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1004,
+						"buffer_size": 1073,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								330,
-								330
+								306,
+								306
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C++/C++.tmLanguage"
+							"syntax": "Packages/CMake/CMake.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 168.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "src/decision_tree.cpp",
+					"file": "src/reduce_greedy.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7058,
+						"buffer_size": 1332,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								959,
-								959
+								1332,
+								1332
 							]
 						],
 						"settings":
@@ -451,10 +551,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 535.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
@@ -463,15 +563,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2195,
+						"buffer_size": 2419,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1382,
-								1382
+								2178,
+								2178
 							]
 						],
 						"settings":
@@ -480,27 +580,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 255.0,
+						"translation.y": 589.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
 					"buffer": 5,
-					"file": "src/reduce_censi.cpp",
+					"file": "src/fsm.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2917,
+						"buffer_size": 7816,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								469,
-								469
+								194,
+								194
 							]
 						],
 						"settings":
@@ -517,19 +617,19 @@
 				},
 				{
 					"buffer": 6,
-					"file": "src/fsm.cpp",
+					"file": "src/reduce_josh.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6356,
+						"buffer_size": 1677,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3362,
-								3362
+								1075,
+								1075
 							]
 						],
 						"settings":
@@ -538,10 +638,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3061.0,
+						"translation.y": 323.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 6,
 					"type": "text"
 				}
 			]
@@ -568,7 +668,7 @@
 	},
 	"input":
 	{
-		"height": 40.0
+		"height": 113.0
 	},
 	"layout":
 	{
@@ -609,14 +709,14 @@
 		"rows":
 		[
 			0.0,
-			0.766611295681,
+			0.75,
 			1.0
 		]
 	},
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 343.0
+		"height": 188.0
 	},
 	"output.find_results":
 	{
@@ -652,7 +752,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 3,
+	"selected_group": 0,
 	"settings":
 	{
 	},

@@ -95,28 +95,7 @@ void fsm::reset(){
 	active_state = &find_state(initial_state);
 }
 
-bool fsm::test_compat(const state& s1, const state& s2) const{
-	if(!s1.test_io_map(s2))
-		return false;
-
-	const io_map_t& io_map = s1.io_map;
-	for(io_map_t::const_iterator it = io_map.begin(); it != io_map.end(); it++){
-		outpair op2 = s2(it->first);		
-		if(op2.output==UNDEFINED)
-			continue;
-
-		skey_t	k1 = it->second.state,
-				k2 = op2.state;	
-
-		if(!test_compat(k1, k2)){
-			// cout << s1.key << ", " << s2.key << " (" << it->first << "):  " << k1 << ", " << k2 << endl;
-			return false;
-		}
-	}
-	return true;
-}
-
-bool fsm::test_compat(skey_t k1, skey_t k2) const{
+bool test_compat(skey_t k1, skey_t k2, const compat_t& compat) {
 	if(k1==k2)
 		return true;
 
@@ -127,8 +106,28 @@ bool fsm::test_compat(skey_t k1, skey_t k2) const{
 	return (it1 != ks1.end()) || (it2 != ks2.end());
 }
 
+bool test_compat(state& s1, state& s2, const compat_t& compat) {
+	if(!s1.test_io_map(s2))
+		return false;
 
-bool fsm::iterate_compat(){
+	const io_map_t& io_map = s1.get_io_map();
+	for(io_map_t::const_iterator it = io_map.begin(); it != io_map.end(); it++){
+		outpair op2 = s2(it->first);		
+		if(op2.output==UNDEFINED)
+			continue;
+
+		skey_t	k1 = it->second.state,
+				k2 = op2.state;	
+
+		if(!test_compat(k1, k2, compat)){
+			// cout << s1.key << ", " << s2.key << " (" << it->first << "):  " << k1 << ", " << k2 << endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+bool iterate_compat(compat_t& compat, fsm& orig){
 	//print_compat(cout);
 
 	bool changed = false;
@@ -136,7 +135,7 @@ bool fsm::iterate_compat(){
 
 		set<skey_t>& key_set = it->second;
 		for(set<skey_t>::iterator kit = key_set.begin(); kit != key_set.end(); kit++){
-			if(!test_compat(find_state(it->first), find_state(*kit))){
+			if(!test_compat(orig.find_state(it->first), orig.find_state(*kit), compat)){
 //			if(!test_compat(it->first, *kit)){
 
 				changed = true;
@@ -148,19 +147,21 @@ bool fsm::iterate_compat(){
 	return changed;
 }
 
-void fsm::compute_compat(){	
+compat_t compute_compat(fsm& f){
 
-	for(state_map_t::iterator it = state_map.begin(); it != state_map.end(); it++){	
+	compat_t compat;
+
+	const state_map_t& sm = f.get_state_map();
+
+	for(state_map_t::const_iterator it = sm.begin(); it != sm.end(); it++){	
 		compat[it->first] = set<skey_t>();
 		set<skey_t>& key_set = compat[it->first];
-		for(state_map_t::iterator jt = state_map.begin(); jt != it; jt++)
+		for(state_map_t::const_iterator jt = sm.begin(); jt != it; jt++)
 			key_set.insert(jt->first);
 	}
 
-	while(iterate_compat());
-}
+	while(iterate_compat(compat, f));
 
-const compat_t& fsm::get_compat(){
 	return compat;
 }
 
@@ -214,15 +215,17 @@ ostream& operator<< (ostream& out, const fsm& right){
 	return out;
 }
 
-void fsm::print_compat(ostream& out){
-	for(compat_t::iterator it = compat.begin(); it != compat.end(); it++){
+ostream& operator<<(ostream& out, const compat_t& right){
+	for(compat_t::const_iterator it = right.begin(); it != right.end(); it++){
 		out << it->first << ": ";
-		set<skey_t>& key_set = it->second;
+		const set<skey_t>& key_set = it->second;
 		for(set<skey_t>::iterator kit = key_set.begin(); kit !=key_set.end(); kit++)
 		out << *kit << " ";
 		out << endl;
 	}
 	out << endl;
+
+	return out;
 }
 
 void save_dot(string filename, const fsm& right){
@@ -274,3 +277,49 @@ void fsm::save_dot(ostream& out) const{
 	out << "}\n";
 }
 
+ostream& operator<<(ostream& out, const cover_t& right){
+
+	for(int i=0; i<right.size(); i++){
+		const set<skey_t>& curr = right[i];
+		cout << "{ ";
+
+		for(set<skey_t>::const_iterator it = curr.begin(); it!=curr.end(); it++)
+			cout << *it << " ";
+
+		cout << "} ";
+	}
+
+	return out;
+}
+
+
+typedef map<skey_t, skey_t> clique_map_t;
+
+fsm reduce(fsm& orig, const cover_t& X){
+	fsm temp;
+
+	/* Compute name reassignments */
+	clique_map_t clique_map;
+	for(int i=0; i<X.size(); i++){
+		state& new_state = temp.add_state();
+		skey_t new_key = new_state.get_key();
+		for(set<skey_t>::const_iterator it = X[i].begin(); it!=X[i].end(); it++){
+			clique_map[*it] = new_key;
+			new_state.add_io_map(orig.find_state(*it));
+		}
+	}
+
+	state_map_t& sm = temp.get_state_map();
+	for(state_map_t::iterator it = sm.begin(); it!=sm.end(); it++){
+		state& curr = it->second;
+		io_map_t& im = curr.get_io_map();
+
+		for(io_map_t::iterator jt = im.begin(); jt!=im.end(); jt++){
+			jt->second.state = clique_map[jt->second.state];
+		}
+	}
+
+	temp.set_initial_state(clique_map[orig.get_initial_state()]);
+
+	return temp;
+}
