@@ -19,13 +19,8 @@ include_directories("${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/src")
 add_library(state	STATIC	src/state.cpp)
 add_library(fsm		STATIC	src/fsm.cpp)
 add_library(tree	STATIC	src/decision_tree.cpp)
-add_library(emulation	STATIC	src/emulation.cpp)
 
-#add_library(censi	STATIC	src/reduce_censi.cpp)
-#add_library(josh	STATIC	src/reduce_josh.cpp)
-#add_library(exhaustive	STATIC	src/reduce_josh_exhaustive.cpp)
 add_library(graph	STATIC	src/Graph.cpp)
-#add_library(exact	STATIC	src/reduce_exact.cpp)
 
 
 add_executable(rep-redux src/main.cpp)

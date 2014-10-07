@@ -1,16 +1,16 @@
 #include <list>
 #include "decision_tree.h"
 
-template <typename T>
-ostream& operator<<(ostream& out, const set<T>& right)
-{
-	out << "Set " << right.size() << " items:";
-	for(typename set<T>::iterator it = right.begin(); it!=right.end(); it++)
-		out << " " << *it;
-	return out;
-}
+// template <typename T>
+// ostream& operator<<(ostream& out, const set<T>& right)
+// {
+// 	out << "Set " << right.size() << " items:";
+// 	for(typename set<T>::iterator it = right.begin(); it!=right.end(); it++)
+// 		out << " " << *it;
+// 	return out;
+// }
 
-bool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat);
+
 
 cover_t cover_josh(const compat_t& ct, fsm& orig){
 	cover_t X;
@@ -44,24 +44,4 @@ cover_t cover_josh(const compat_t& ct, fsm& orig){
 
 cover_t cover_josh(fsm& orig){
 	return cover_josh(compute_compat(orig), orig);
-}
-
-
-bool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat){
-	//cout << "Adding " << new_entry << " to clique (" << new_clique << ").\n";
-
-	compat_t::const_iterator mi = compat.find(new_entry);
-	const set<skey_t>& kc = mi->second;
-
-	for(set<skey_t>::iterator it = new_clique.begin(); it!=new_clique.end(); it++){	
-		compat_t::const_iterator mi = compat.find(*it);
-
-		const set<skey_t>& kr = mi->second;
-
-		if(kr.find(new_entry)==kr.end() && kc.find(*it)==kc.end())
-			return false;
-	}
-
-	new_clique.insert(new_entry);
-	return true;
 }

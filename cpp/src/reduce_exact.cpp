@@ -107,22 +107,3 @@ cover_t cover_exact(fsm& orig){
 
 	return argmin;
 }
-
-bool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat){
-	//cout << "Adding " << new_entry << " to clique (" << new_clique << ").\n";
-
-	compat_t::const_iterator mi = compat.find(new_entry);
-	const set<skey_t>& kc = mi->second;
-
-	for(set<skey_t>::iterator it = new_clique.begin(); it!=new_clique.end(); it++){	
-		compat_t::const_iterator mi = compat.find(*it);
-
-		const set<skey_t>& kr = mi->second;
-
-		if(kr.find(new_entry)==kr.end() && kc.find(*it)==kc.end())
-			return false;
-	}
-
-	new_clique.insert(new_entry);
-	return true;
-}

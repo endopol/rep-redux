@@ -10,24 +10,42 @@ public:
 		default_random_engine generator(seed);
     	poisson_distribution<int> distribution(lambda);
 
-		state& root = add_state();
-		initial_state = root.get_key();
-		df_iterator it(this, max_height);
-		do{
-			it.step_in();
+		int depth = 0;
 
-			cout << "Trace: " << it.top() << endl;
+		while(depth<max_height){
+			state_map = state_map_t();
 
-			int num_children = distribution(generator);
-			cout << "num_children: " << num_children << endl;
+			state& root = add_state();
+			initial_state = root.get_key();
+			df_iterator it(this, max_height);
+						
+			depth = 0;
+			do{
+				depth = max(depth, it.get_depth());
 
-			for(int i=0; i<num_children; i++){
-				in_t in = rand()%num_inputs + 'a';
-				out_t out = rand()%num_outputs;
-				state& new_state = add_state();
+				int num_children = distribution(generator);
+				// cout << "num_children: " << num_children << endl;
 
-				it.top_state().add_io_map(in, outpair(out, new_state.get_key()));
-			}
-		}while(it++);
+				// cout << "Trace: " << it << endl;
+
+				state& curr_state = it.top_state();
+
+				for(int i=0; i<num_children; i++){
+					in_t in = rand()%num_inputs + 'a';
+					out_t out = rand()%num_outputs;
+					if(curr_state.find(in)!=curr_state.end())
+						continue;
+
+					state& new_state = add_state();
+					curr_state.add_io_map(in, outpair(out, new_state.get_key()));
+
+					// cout << "map " << in << ":" << out << "->" << new_state.get_key() << endl;
+				}
+
+				cout << it.top_state() << endl;
+			}while(it++);
+
+		}
+		// cout << state_map.size() << endl;
 	}
 };

@@ -21,6 +21,9 @@ decision_tree::decision_tree(fsm in, int depth){
 		while(tt.get_depth() > it.get_depth())
 			tt.step_out();
 
+		if(it.top_state().get_size()==0)
+			continue;
+
 		new_state = &(add_state());
 
 		io_map_t::const_iterator ii = it.top().first;
@@ -165,15 +168,23 @@ bool df_iterator::step_in(){
 	if(get_depth()==0)
 		return false;
 
-	const state& s = top_state();
+	state& s = top_state();
 	io_map_t::const_iterator it = top().first;
-	if(it==s.end())
+
+	if(s.get_size()==0){
+		stack.push_back(trace_t(s.end(), &s));
+	}
+
+	if(it==s.end()){
 		return false;
+	}
 
 	return step_in(it->first);
 }
 
 bool df_iterator::step_in(in_t in){	
+	// cout << "STEPPING IN TO " << in << endl;
+
 	trace_t& top_trace = top();
 	state* s = top_trace.second;
 	io_map_t::const_iterator it = s->find(in);
@@ -183,7 +194,7 @@ bool df_iterator::step_in(in_t in){
 	skey_t next_key = it->second.state;
 	state* next = &(base->find_state(next_key));
 	stack.push_back(trace_t(next->begin(), next));
-	return (next->get_size()>0);
+	return true;
 }
 
 void df_iterator::step_out(){
@@ -213,12 +224,12 @@ io_map_t::const_iterator& df_iterator::last_iterator(){
 }
 
 bool df_iterator::operator++(){
-	// cout << "Started at " << top_state()->get_key() 
+	// cout << "Started at " << top_state().get_key() 
 	// 	 	<< " (" << top().first->first << ":" << top().first->second.output << ").\n";
 
 	if(get_depth()<max_depth && step_in()){				
-		// cout << "Stepped into " << top_state()->get_key() 
-		//  	<< " (" << top().first->first << ":" << top().first->second.output << ").\n";
+		// cout << "Stepped into " << top_state().get_key() 
+		 	// << " (" << top().first->first << ":" << top().first->second.output << ").\n";
 		return true;
 	}
 	
@@ -238,7 +249,7 @@ bool df_iterator::operator++(){
 			break;
 	}
 
-	// cout << "Stepped onto " << top_state()->get_key()
+	// cout << "Stepped onto " << top_state().get_key()
 	// 	<< " (" << top().first->first << ":" << top().first->second.output << ").\n";
 	return true;
 }

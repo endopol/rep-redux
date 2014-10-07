@@ -130,5 +130,6 @@ public:
 ostream& operator<<(ostream& out, const compat_t& right);
 ostream& operator<<(ostream& out, const cover_t& right);
 fsm reduce(const fsm& orig, const cover_t& X);
+bool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat);
 
 #endif
