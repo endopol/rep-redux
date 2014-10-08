@@ -4,6 +4,8 @@
 #include "emulation.cpp"
 #include "poisson_fsm.cpp"
 #include "reduce_exact.cpp"
+#include "reduce_alberto.cpp"
+#include <iomanip>
 #include <ctime>
 
 #include <fstream>
@@ -12,66 +14,89 @@
 vector<in_t> read_sequence(istream& in, int n);
 
 int main(){
-	string 	database = "alberto",
-			indir = "../data/" + database + "/",
-			outdir = indir + "/output/";
+	// string 	database = "alberto",
+	// 		indir = "../data/" + database + "/",
+	// 		outdir = indir + "/output/";
 
 	// string infile = indir + database + ".fsm";
 	// fsm hh(infile);
 
 	// cout << "The original file: " << hh << endl;
 
-	const int DEPTH = 10;
 
-	poisson_tree f(1, 10, 10, DEPTH);
+	const int MIN_STATES = 0, MAX_STATES = 700,	NUM_REPEATS = 500, MAX_D = 50, DEPTH_STEP = 2;
 
-	// cout << "The first-first tree:\n\n" << f << endl;
-	// string treefile0 = outdir + database + "0.dot";
-	// save_dot(treefile0, f);
+	for(int depth = DEPTH_STEP; depth<=MAX_D; depth+=DEPTH_STEP){
 
-	// string treefile1 = outdir + database + "1.dot";
-	// decision_tree g1(f, 6);
-	// cout << "The first tree:\n\n" << g1 << endl;
-	// save_dot(treefile1, g1);
+		clock_t ta = clock();
+		cout << "Depth " << depth << ": ";
 
-	// decision_tree g2(g1, 6);
+		char outfile[20];
+		sprintf(outfile, "data-%02d.txt", depth);		
+		ofstream out(outfile);
 
-	// int emulation_depth = 10;
-	// if(emulates(g2, g1, emulation_depth))
-	// 	cout << "Emulates at depth " << emulation_depth << ".\n";
-	// else
-	// 	cout << "Fails to emulate at depth " << emulation_depth << ".\n";
+		out << "N_STATES    _N_CENSI  _T_CENSI    N_GREEDY  T_GREEDY    __N_JOSH  __T_JOSH    LO_BOUND  N_ALBRTO  T_ALBRTO\n";
 
-	clock_t t1 = clock();
-	cover_t ct1 = cover_exact(f);
-	clock_t t2 = clock();
+		for(int rep = 0; rep<NUM_REPEATS; rep++){
 
-	cout << "Exact (" << ct1.size() << " cliques): " << ct1 << endl;
-	cout << "Computed in "  << (t2 - t1) / (double)(CLOCKS_PER_SEC / 1000) << " ms\n";
+			poisson_tree f(1, 10, 20, depth, MIN_STATES, 100000);
+
+			out << setw(8) << f.get_size() << "    ";
+
+			// clock_t t1 = clock();
+			// cover_t ct1 = cover_exact(f);
+			// clock_t t2 = clock();
 
 
-	clock_t t3 = clock();
-	cover_t ct2 = cover_greedy(f);
-	clock_t t4 = clock();
+			// CENSI
+			clock_t t7 = clock();
+			fsm g = reduce_censi(f, depth);
+			clock_t t8 = clock();
 
-	cout << "Greedy (" << ct2.size() << " cliques): " << ct2 << ".\n";
-	cout << "Computed in "  << (t4 - t3) / (double)(CLOCKS_PER_SEC / 1000) << " ms.\n";
-
-
-	clock_t t5 = clock();
-	cover_t ct3 = cover_josh(f);
-	clock_t t6 = clock();
-
-	cout << "Josh (" << ct3.size() << " cliques): " << ct3 << ".\n";
-	cout << "Computed in "  << (t6 - t5) / (double)(CLOCKS_PER_SEC / 1000) << " ms.\n";
+			out << setw(8) << g.get_size() << "  " << setw(8) << (t8 - t7) / (double)(CLOCKS_PER_SEC / 1000) << "    ";
+			// cout << "Censi: " << g.get_size() << " states.\n";
+			// cout << "Computed in "  << (t8 - t7) / (double)(CLOCKS_PER_SEC / 1000) << " ms.\n\n";
 
 
-	clock_t t7 = clock();
-	fsm g = reduce_censi(f, DEPTH);
-	clock_t t8 = clock();
+			// GREEDY
+			clock_t t3 = clock();
+			cover_t ct2 = cover_greedy(f);
+			clock_t t4 = clock();
 
-	cout << "Censi: " << g.get_size() << " states.\n";
-	cout << "Computed in "  << (t8 - t7) / (double)(CLOCKS_PER_SEC / 1000) << " ms.\n";
+			out << setw(8) << ct2.size() << "  " << setw(8) << (t4 - t3) / (double)(CLOCKS_PER_SEC / 1000) << "    ";
+			// cout << "Greedy (" << ct2.size() << " cliques): " << ct2 << ".\n";
+			// cout << "Computed in "  << (t4 - t3) / (double)(CLOCKS_PER_SEC / 1000) << " ms.\n\n";
+
+
+			// JOSH
+			clock_t t5 = clock();
+			cover_t ct3 = cover_josh(f);
+			clock_t t6 = clock();
+
+			out << setw(8) << ct3.size() << "  " << setw(8) << (t6 - t5) / (double)(CLOCKS_PER_SEC / 1000) << "    ";
+			// cout << "Josh (" << ct3.size() << " cliques): " << ct3 << ".\n";
+			// cout << "Computed in "  << (t6 - t5) / (double)(CLOCKS_PER_SEC / 1000) << " ms.\n\n";
+
+			if(f.get_size()>MAX_STATES)
+				continue;
+
+			// ALBERTO
+			int lo_bound;
+			clock_t t9 = clock();
+			cover_t ct4 = cover_alberto(f, lo_bound);
+			clock_t t10 = clock();
+
+			out << setw(8) << lo_bound << "  ";
+			out << setw(8) << ct4.size() << "  " << setw(8) << (t10 - t9) / (double)(CLOCKS_PER_SEC / 1000) << "    ";
+			// cout << "Alberto (" << ct4.size() << " cliques): " << ct4 << ".\n";
+			// cout << "Computed in "  << (t10 - t9) / (double)(CLOCKS_PER_SEC / 1000) << " ms.\n\n";
+
+			out << endl;
+		}
+		out.close();
+		clock_t tb = clock();
+		cout << "computed in "  << (tb - ta) / (double)(CLOCKS_PER_SEC / 1000) << " ms.\n";
+	}
 	return 0;
 }
 

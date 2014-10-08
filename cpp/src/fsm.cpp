@@ -325,24 +325,24 @@ fsm reduce(fsm& orig, const cover_t& X){
 }
 
 
-// bool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat){
-// 	//cout << "Adding " << new_entry << " to clique (" << new_clique << ").\n";
+bool add_to_clique_symmetric(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat){
+	//cout << "Adding " << new_entry << " to clique (" << new_clique << ").\n";
 
-// 	compat_t::const_iterator mi = compat.find(new_entry);
-// 	const set<skey_t>& kc = mi->second;
+	compat_t::const_iterator mi = compat.find(new_entry);
+	const set<skey_t>& kc = mi->second;
 
-// 	for(set<skey_t>::iterator it = new_clique.begin(); it!=new_clique.end(); it++){	
-// 		compat_t::const_iterator mi = compat.find(*it);
+	for(set<skey_t>::iterator it = new_clique.begin(); it!=new_clique.end(); it++){	
+		compat_t::const_iterator mi = compat.find(*it);
 
-// 		const set<skey_t>& kr = mi->second;
+		const set<skey_t>& kr = mi->second;
 
-// 		if(kr.find(new_entry)==kr.end() && kc.find(*it)==kc.end())
-// 			return false;
-// 	}
+		if(kr.find(new_entry)==kr.end())
+			return false;
+	}
 
-// 	new_clique.insert(new_entry);
-// 	return true;
-// }
+	new_clique.insert(new_entry);
+	return true;
+}
 
 bool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat){
 	//cout << "Adding " << new_entry << " to clique (" << new_clique << ").\n";
@@ -361,4 +361,38 @@ bool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& co
 
 	new_clique.insert(new_entry);
 	return true;
+}
+
+void symmetrize(compat_t& compat){
+	for(compat_t::iterator it = compat.begin(); it!=compat.end(); it++){
+		skey_t curr_key = it->first;
+		set<skey_t>& curr_set = it->second;
+		for(set<skey_t>::iterator jt = curr_set.begin(); jt!=curr_set.end(); jt++){
+			set<skey_t>& neighbor_set = compat[*jt];
+
+			neighbor_set.insert(curr_key);
+		}
+	}
+}
+
+adj_t compute_adjacency(const compat_t& ct){
+	adj_t A(ct.size());
+
+	map<skey_t, int> keyindex;
+	int count = 0;
+	for(compat_t::const_iterator it=ct.begin(); it!=ct.end(); it++){
+		int index1 = count;
+		keyindex[it->first] = count++;
+		const set<skey_t>& curr = it->second;
+		for(set<skey_t>::const_iterator jt = curr.begin(); jt!=curr.end(); jt++){
+			skey_t key2 = *jt;
+			int index2 = keyindex[key2];
+
+			A[index1].push_back(index2);
+			A[index2].push_back(index1);
+		}
+
+	}
+
+	return A;
 }

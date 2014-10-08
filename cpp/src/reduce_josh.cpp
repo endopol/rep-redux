@@ -12,13 +12,12 @@
 
 
 
-cover_t cover_josh(const compat_t& ct, fsm& orig){
+cover_t cover_josh(const compat_t& ct){
 	cover_t X;
 
 	list<skey_t> free_keys;
 	
-	const state_map_t& sm = orig.get_state_map();
-	for(state_map_t::const_iterator it = sm.begin(); it!=sm.end(); it++)
+	for(compat_t::const_iterator it = ct.begin(); it!=ct.end(); it++)
 		free_keys.push_back(it->first);
 
 	//cout << free_keys << endl;
@@ -43,5 +42,5 @@ cover_t cover_josh(const compat_t& ct, fsm& orig){
 }
 
 cover_t cover_josh(fsm& orig){
-	return cover_josh(compute_compat(orig), orig);
+	return cover_josh(compute_compat(orig));
 }

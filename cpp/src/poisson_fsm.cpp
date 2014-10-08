@@ -5,14 +5,14 @@
 class poisson_tree: public decision_tree{
 
 public:
-	poisson_tree(double lambda, in_t num_inputs, out_t num_outputs, int max_height){
+	poisson_tree(double lambda, in_t num_inputs, out_t num_outputs, int max_height, int min_states, int max_states){
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 		default_random_engine generator(seed);
     	poisson_distribution<int> distribution(lambda);
 
 		int depth = 0;
 
-		while(depth<max_height){
+		while(depth<max_height || state_map.size()>max_states || state_map.size()<min_states){
 			state_map = state_map_t();
 
 			state& root = add_state();
@@ -29,6 +29,8 @@ public:
 				// cout << "Trace: " << it << endl;
 
 				state& curr_state = it.top_state();
+				if(curr_state.get_size()>0)
+					continue;
 
 				for(int i=0; i<num_children; i++){
 					in_t in = rand()%num_inputs + 'a';
@@ -42,7 +44,7 @@ public:
 					// cout << "map " << in << ":" << out << "->" << new_state.get_key() << endl;
 				}
 
-				cout << it.top_state() << endl;
+				//cout << it.top_state() << endl;
 			}while(it++);
 
 		}

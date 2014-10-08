@@ -131,5 +131,12 @@ ostream& operator<<(ostream& out, const compat_t& right);
 ostream& operator<<(ostream& out, const cover_t& right);
 fsm reduce(const fsm& orig, const cover_t& X);
 bool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat);
+bool add_to_clique_symmetric(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat);
+void symmetrize(compat_t& compat);
+compat_t complement(compat_t& compat);
+
+
+typedef vector<vector<int> > adj_t;
+adj_t compute_adjacency(const compat_t& ct);
 
 #endif
