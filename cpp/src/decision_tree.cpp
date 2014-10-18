@@ -1,15 +1,26 @@
+/*
+ * =====================================================================================
+ *
+ *       Filename:  decision_tree.cpp
+ *
+ *    Description:  
+ *
+ *        Version:  1.0
+ *        Created:  10/17/2014 12:46:35 PM
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  Joshua Hernandez (jah), endopol@gmail.com
+ *   Organization:  UCLA Computer Vision Lab
+ *
+ * =====================================================================================
+ */
+#include <stdlib.h>
 #include "decision_tree.h"
 
-ostream& operator<<(ostream& out, const trace_t& right){
-	if(right.second!=NULL)
-		out << right.second->get_key();
-	else
-		out << "NULL";
+/* #####   DECISION TREE METHODS   ################################################## */
 
-	out << "(" << right.first->first << ")";
-	return out;
-}
-
+/* DECISION TREE CONSTRUCTORS */
 decision_tree::decision_tree(fsm in, int depth){
 	state* new_state = &(add_state());
 	initial_state = new_state->get_key();
@@ -38,9 +49,17 @@ decision_tree::decision_tree(fsm in, int depth){
 		tt.step_in(input);
 
 	}while(it++);
-
 }
 
+/* I/O METHODS */
+/*
+ *--------------------------------------------------------------------------------------
+ *       Class:  decision_tree
+ *      Method:  decision_tree :: write_tree
+ * Description:  Writes out a tree in nested-list format
+ *   e.g. {a:1 { b:2, c:3 { c:5 } }, e:4 }.
+ *--------------------------------------------------------------------------------------
+ */
 void decision_tree::write_tree(ostream& out, int depth){
 	df_iterator it(this, depth);
 
@@ -49,7 +68,6 @@ void decision_tree::write_tree(ostream& out, int depth){
 	bool finished = false;
 	out << "{ ";
 	while(!finished){
-		const state& curr_state = it.top_state();
 		io_map_t::const_iterator curr = it.top().first;
 		out << curr->first << ":" << curr->second.output << ""; //<< ":" << it.get_depth() << " ";
 		// cout << "Writing " << curr->first << ":" << curr->second.output << "" << endl;
@@ -76,20 +94,17 @@ void decision_tree::write_tree(ostream& out, int depth){
 	out << endl;
 }
 
+/*
+ *--------------------------------------------------------------------------------------
+ *       Class:  decision_tree
+ *      Method:  decision_tree :: read_tree
+ * Description:  Reads in a tree in nested-list format 
+ *  e.g. {a:1 { b:2, c:3 { c:5 } }, e:4 }
+ *--------------------------------------------------------------------------------------
+ */
+int count(const string& str, char c); // Count occurrences of a given character in a given string
 
-int count(const string& str, char c){
-	return count(str.begin(), str.end(), c);
-}
-
-void trim(string& s, const char* delim)
-{
-   size_t p = s.find_first_not_of(delim);
-   s.erase(0, p);
-
-   p = s.find_last_not_of(delim);
-   if (string::npos != p)
-      s.erase(p+1);
-}
+void trim(string& s, const char* delim); // Trim leading and trailing instances of characters in given array
 
 void decision_tree::read_tree(istream& in, int read_depth){
 
@@ -127,7 +142,7 @@ void decision_tree::read_tree(istream& in, int read_depth){
 				is >> new_input;
 				os >> new_output;
 
-				bool success = old_state->add_io_map(new_input, outpair(new_output, new_state->get_key()));
+				old_state->add_io_map(new_input, outpair(new_output, new_state->get_key()));
 
 				//cout << "New state: " << (*new_state);
 				//cout << "Old state: " << (*old_state);;
@@ -148,6 +163,25 @@ void decision_tree::read_tree(istream& in, int read_depth){
 	}
 }
 
+int count(const string& str, char c){
+	return count(str.begin(), str.end(), c);
+}
+
+void trim(string& s, const char* delim)
+{
+   size_t p = s.find_first_not_of(delim);
+   s.erase(0, p);
+
+   p = s.find_last_not_of(delim);
+   if (string::npos != p)
+      s.erase(p+1);
+}
+
+
+/* #####   DF_ITERATOR METHODS   #################################################### */
+
+/* DF_ITERATOR CONSTRUCTORS */
+
 df_iterator::df_iterator(fsm* new_base, int new_depth){
 	base = new_base;
 	max_depth = new_depth;
@@ -164,6 +198,15 @@ df_iterator::df_iterator(fsm* new_base, state* first_state, int new_depth){
 	stack.push_back(trace_t(root->begin(), root));	
 }
 
+
+/* LOW-LEVEL TRAVERSAL METHODS */
+/*
+ *--------------------------------------------------------------------------------------
+ *       Class:  df_iterator
+ *      Method:  df_iterator :: step_in 
+ * Description:  Step into the first child
+ *--------------------------------------------------------------------------------------
+ */
 bool df_iterator::step_in(){
 	if(get_depth()==0)
 		return false;
@@ -182,6 +225,13 @@ bool df_iterator::step_in(){
 	return step_in(it->first);
 }
 
+/*
+ *--------------------------------------------------------------------------------------
+ *       Class:  df_iterator
+ *      Method:  df_iterator :: step_in(skey_t)
+ * Description:  Step into the given child
+ *--------------------------------------------------------------------------------------
+ */
 bool df_iterator::step_in(in_t in){	
 	// cout << "STEPPING IN TO " << in << endl;
 
@@ -201,28 +251,15 @@ void df_iterator::step_out(){
 	stack.pop_back();
 }
 
-int df_iterator::get_depth() const{
-	return stack.size();
-}
 
-trace_t& df_iterator::top(){
-	if(stack.size()==0)
-		return (* (trace_t*) NULL);
-	
-	return stack.back();
-}
-
-state& df_iterator::top_state(){
-	trace_t& top_trace = top();
-	if(&top_trace==NULL)
-		return (* (state*) NULL);
-	else return *(top_trace.second);
-}
-
-io_map_t::const_iterator& df_iterator::last_iterator(){
-	return stack[get_depth()-2].first;
-}
-
+/* TRAVERSAL METHODS */
+/*
+ *--------------------------------------------------------------------------------------
+ *       Class:  df_iterator
+ *      Method:  df_iterator :: operator++
+ * Description:  Traverse edges in depth-first order
+ *--------------------------------------------------------------------------------------
+ */
 bool df_iterator::operator++(){
 	// cout << "Started at " << top_state().get_key() 
 	// 	 	<< " (" << top().first->first << ":" << top().first->second.output << ").\n";
@@ -254,8 +291,15 @@ bool df_iterator::operator++(){
 	return true;
 }
 
-bool df_iterator::operator++(int x){ ++(*this); }
+bool df_iterator::operator++(int x){ return ++(*this); }
 
+/*
+ *--------------------------------------------------------------------------------------
+ *       Class:  df_iterator
+ *      Method:  df_iterator :: advance
+ * Description:  Traverse nodes in depth-first order
+ *--------------------------------------------------------------------------------------
+ */
 bool df_iterator::advance(){
 	if(get_depth()==0)
 		return false;
@@ -263,7 +307,8 @@ bool df_iterator::advance(){
 	bool verbose = false;
 
 	if(verbose) cout << "Advance: " << (void*) this << " from " << top();
-	while(++(*this) && (top().first != top_state().begin()));
+	// TODO: This is likely where everything got fucked up!
+	while(++(*this) && ((top().first != top_state().begin()) || (top().first == top_state().end())));
 	
 	if(verbose) {
 		if(get_depth()>0)
@@ -275,17 +320,33 @@ bool df_iterator::advance(){
 	return (get_depth()>0);
 }
 
-bool df_iterator::step_over(){
-	bool at_end = false;
-	int old_depth = get_depth();
-	do{
-		at_end = !(*this)++;
-	}
-	while (get_depth()>old_depth);
 
-	return !at_end;
+/* COMPARISON OF DF_OPERATORS */
+/*
+ *--------------------------------------------------------------------------------------
+ *       Class:  df_iterator
+ *      Method:  df_iterator :: breakpoint
+ * Description:  Computes the depth of the deepest common ancestor of two iterators
+ *--------------------------------------------------------------------------------------
+ */
+int breakpoint(df_iterator& i1, df_iterator& i2){
+	vector<trace_t>& s1 = i1.stack;
+	vector<trace_t>& s2 = i2.stack;
+
+	int bp = 0;	
+	while(s1[bp].second == s2[bp].second && bp < min(s1.size(), s2.size()))
+		bp++;
+
+	return bp;
 }
 
+/*
+ *--------------------------------------------------------------------------------------
+ *       Class:  df_iterator
+ *      Method:  df_iterator :: operator<=
+ * Description:  Lexicographic comparisons of two iterators
+ *--------------------------------------------------------------------------------------
+ */
 bool operator<=(const df_iterator& it1, const df_iterator& it2){
 	for(int i=0; i<it1.stack.size(); i++)
 		if(it1.stack[i].first->first<it2.stack[i].first->first)
@@ -296,6 +357,13 @@ bool operator<=(const df_iterator& it1, const df_iterator& it2){
     return true;
 }
 
+/*
+ *--------------------------------------------------------------------------------------
+ *       Class:  df_iterator
+ *      Method:  df_iterator :: operator==
+ * Description:  Equivalence testing of two iterators
+ *--------------------------------------------------------------------------------------
+ */
 bool operator==(const df_iterator& it1, const df_iterator& it2){
 	if(it1.stack.size()!=it2.stack.size())
 		return false;
@@ -307,6 +375,28 @@ bool operator==(const df_iterator& it1, const df_iterator& it2){
 	return true;
 } 
 
+
+/* ACCESSOR METHODS */
+int df_iterator::get_depth() const{
+	return stack.size();
+}
+
+trace_t& df_iterator::top(){
+	if(stack.size()==0)
+		return (* (trace_t*) NULL);
+	
+	return stack.back();
+}
+
+state& df_iterator::top_state(){
+	trace_t& top_trace = top();
+	if(&top_trace==NULL)
+		return (* (state*) NULL);
+	else return *(top_trace.second);
+}
+
+
+/* I/O ROUTINES */
 ostream& operator<<(ostream& out, const df_iterator& it){
 	out << "Stack depth " << it.get_depth() << ": ";
 	for(int i=0; i<it.get_depth(); i++){
@@ -328,3 +418,15 @@ ostream& operator<<(ostream& out, const df_iterator& it){
 	out.flush();
 	return out;
 }
+
+// stream operator for printing out iterator stack traces
+ostream& operator<<(ostream& out, const trace_t& right){
+	if(right.second!=NULL)
+		out << right.second->get_key();
+	else
+		out << "NULL";
+
+	out << "(" << right.first->first << ")";
+	return out;
+}
+

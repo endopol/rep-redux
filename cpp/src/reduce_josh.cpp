@@ -1,17 +1,6 @@
 #include <list>
 #include "decision_tree.h"
 
-// template <typename T>
-// ostream& operator<<(ostream& out, const set<T>& right)
-// {
-// 	out << "Set " << right.size() << " items:";
-// 	for(typename set<T>::iterator it = right.begin(); it!=right.end(); it++)
-// 		out << " " << *it;
-// 	return out;
-// }
-
-
-
 cover_t cover_josh(const compat_t& ct){
 	cover_t X;
 

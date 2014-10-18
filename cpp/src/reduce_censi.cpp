@@ -1,89 +1,180 @@
+/*
+ * =====================================================================================
+ *
+ *       Filename:  reduce_censi.cpp
+ *
+ *    Description:  Censi's bit-at-a-time method for reducing a decision tree
+ *
+ *        Version:  1.0
+ *        Created:  10/17/2014 12:52:55 PM
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  Joshua Hernandez (jah), endopol@gmail.com
+ *   Organization:  UCLA Computer Vision Lab
+ *
+ * =====================================================================================
+ */
+#include <sstream>
 #include "decision_tree.h"
+#include "limits.h"
 
-#define MAX_DEPTH 4
 
-state& reduce_censi(fsm& orig, state* starting_state, int depth, fsm& redux){
-	bool verbose = false;
+/*
+ * =====================================================================================
+ *         Type:  metamap
+ *  Description:  A map assigning states from one fsm to "meta-states" of another.
+ * =====================================================================================
+ */
+typedef map<skey_t, skey_t> metamap;
+ostream& operator<<(ostream& out, metamap& right){
+	for(metamap::const_iterator it = right.begin(); it != right.end(); it++)
+		out << it->first << "->" << it->second << "  ";	
 
-	string indent = "";
-	for(int i=0; i<(MAX_DEPTH-depth); i++)
-		indent += "   ";
-
-	state& new_state = redux.add_state();
-	if(verbose) cout << indent << "Creating new state \"" << new_state.get_key() << "\" at " << starting_state->get_key() << ".\n";
-
-	for(io_map_t::const_iterator si = starting_state->begin(); si!=starting_state->end(); si++)
-		new_state.add_io_map(si->first, outpair(si->second.output, new_state.get_key()), false);
-
-	if(verbose) cout << indent << "Reducing from " << starting_state->get_key() << ", max_depth=" << depth << ".\n";
-	df_iterator it(&orig, starting_state, depth);
-
-	bool finished = false;
-	while(!finished){
-		state& is = it.top_state();
-
-		df_iterator jt = it;
-		if(verbose) cout << indent << "Deploying jt.\n";
-		bool has_skipped = false;
-		while(jt.advance()){
-			const state& js = jt.top_state();
-			
-			if(verbose) cout << indent << "jt at " << jt.top() << endl;	
-
-			if(!is.test_io_map(js)){
-				if(verbose) cout << indent << "Split at " << is.get_key()	<< " // " << js.get_key() << ".\n";
-
-				io_map_t::const_iterator top_it = it.top().first;
-				if(verbose){
-					cout << indent << "it: " << it << endl;
-					cout << indent << "jt: " << jt << endl;
-				}
-				it.step_in();
-				state& sub_state = reduce_censi(orig, &it.top_state(), depth-it.get_depth()+1, redux);
-			
-				new_state.add_io_map(top_it->first, outpair(top_it->second.output, sub_state.get_key()), true);
-				if(verbose) cout << indent << "Attached " << it.top_state().get_key() << " to \"" << new_state.get_key() 
-								 << "\" as \"" << sub_state.get_key() << "\" by " << top_it->first <<  ":" << top_it->second.output << ".\n";
-				
-				if(verbose) cout << indent << it << endl;
-				if(verbose) cout << indent << "it: skipping from " << it.top() << endl;
-				it.step_out();
-				
-				if(verbose) cout << indent << "it: landing at ";	
-
-				bool stepped = (it.step_over());
-				
-				if(verbose){
-					if(stepped)
-						cout << it.top() << endl;
-					else
-						cout << "END.\n";
-				}				
-
-				has_skipped = true;
-
-				break;
-			}
-			else{
-				state& bottom_state = jt.top_state();
-				for(io_map_t::const_iterator si = bottom_state.begin(); si!=bottom_state.end(); si++)
-					new_state.add_io_map(si->first, outpair(si->second.output, new_state.get_key()), false);
-
-				if(verbose) cout << indent << "Subsumed state " << bottom_state.get_key() << " into \"" << new_state.get_key() << "\".\n";
-			}
-
-		}
-		if(!has_skipped)
-			finished = (!it.advance());
-	}
-	if(verbose) cout << indent << "Stepping out (depth=" << depth << ").\n\n";
-
-	return new_state;
+	return out;
 }
 
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  test_secondary(metamap&m, state&, state&)
+ *  Description:  Determines whether two given states map their inputs onto the same
+ *    meta-states.
+ * =====================================================================================
+ */
+bool test_secondary(metamap& mm, state& s1, state& s2){
+    io_map_t &im1 = s1.get_io_map(), &im2 = s2.get_io_map();
+    for(io_map_t::const_iterator it = im1.begin(); it!=im1.end(); it++){
+        in_t in = it->first;           
+        io_map_t::iterator found = im2.find(in);
+        if(found!=im2.end()){
+            skey_t k1 = it->second.state, k2 = found->second.state;
+            metamap::iterator mi1 = mm.find(k1), mi2 = mm.find(k2);
+            if((mi1!=mm.end()) && (mi2!=mm.end())){
+                skey_t nk1 = mi1->second, nk2 = mi2->second;
+                if(!(nk1 == nk2))
+                    return false;
+            }
+        }
+            
+    }
+    return true;
+}
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name: reduce_censi(fsm&, int) 
+ *  Description: Map a given decision tree (or a depth-limited fsm) onto a subtree 
+ *    with the same policy. 
+ * =====================================================================================
+ */
 fsm reduce_censi(fsm& orig,  int depth){
-	fsm temp;
-	state& first = reduce_censi(orig, &(orig.find_state(orig.get_initial_state())), depth, temp);
-	temp.set_initial_state(first.get_key());
+    fsm temp;
+	metamap mm;
+
+	bool verbose = false;
+    if(verbose) cout << "\n\nREDUCE CENSI:\n\n";
+
+    // 1. Initialize the meta-map
+	state first_state = temp.add_state();
+	temp.set_initial_state(first_state.get_key());
+	state_map_t& sm = orig.get_state_map();
+	for(state_map_t::iterator at = sm.begin(); at!=sm.end(); at++)
+		if(at->second.get_io_map().size()>0)
+			mm[at->first] = first_state.get_key();
+
+	bool changed = true;
+    string change_points;
+	while(changed){
+		if(verbose) cout << "Map: " << mm << ".\n";
+
+		changed = false;
+	
+		df_iterator it(&orig, depth);
+
+		int minbp = INT_MAX;
+		state* argminbp = NULL;
+
+        // 2. Iterate over pairs of states...
+		while(it.get_depth()>0){
+			state& is = it.top_state();
+			df_iterator jt = it;
+			jt.advance();
+			while(jt.get_depth()>0){
+				state& js = jt.top_state();
+								
+                // ...selecting pairs of incompatible nodes...
+				if(mm[is.get_key()] == mm[js.get_key()] && (!is.test_io_map(js) || !test_secondary(mm, is, js))){					
+					changed = true;
+
+                    // ...finding their latest common ancestor... 
+					int bp = breakpoint(it, jt);
+
+                    // ...and choosing the least deep such as a split point. 
+					if(bp<minbp){
+						minbp = bp;
+						int split_point = max(1, bp);
+						if(it.get_depth()>split_point)
+							argminbp = it.get_state(split_point);
+						else
+							argminbp = jt.get_state(split_point);
+
+                        ostringstream os;
+                        os << "it: " << it << endl;
+                        os << "it: " << jt << endl;
+                        change_points = os.str();
+					}
+				}
+
+				jt.advance();
+			}
+			it.advance();
+		}
+
+        // 2. Apply new label to the descendants of the split
+		if(changed){
+			state new_state = temp.add_state();
+            if(verbose) cout << change_points << endl;
+			if(verbose) cout << "Split \"" << new_state.get_key() << "\" at " << argminbp->get_key() << endl;
+			df_iterator bt(&orig, argminbp, depth-minbp);
+			for(; bt.get_depth()>0; bt.advance())
+				mm[bt.top_state().get_key()] = new_state.get_key();
+			if(verbose) cout << mm << "\n\n";
+		}
+	}
+
+        
+	// 3. Induce mappings on metastates
+	for(metamap::iterator it = mm.begin(); it!=mm.end(); it++){
+
+		state orig_state = orig.find_state(it->first), 
+			  &metastate = temp.find_state(it->second);
+
+		io_map_t& io_map = orig_state.get_io_map();
+		for(io_map_t::const_iterator iot = io_map.begin(); iot != io_map.end(); iot++){
+			skey_t target = mm[iot->second.state];
+			bool replace = (sm.find(target) != sm.end());
+			
+			outpair op(iot->second.output, target);
+			metastate.add_io_map(iot->first, op, replace);
+		}
+	}
+
+    // 4. Remove illegal mappings
+    state_map_t& tm = temp.get_state_map();
+   	for(metamap::iterator it = mm.begin(); it!=mm.end(); it++){
+        state_map_t::iterator found = tm.find(it->second);
+        if(found==tm.end())
+            continue;
+
+		state& metastate = found->second;
+
+		io_map_t& t_map = metastate.get_io_map();
+		for(io_map_t::iterator iot = t_map.begin(); iot != t_map.end(); iot++){
+			skey_t target = iot->second.state;
+			if(mm.find(target) == mm.end())
+				iot->second.state = metastate.get_key();
+		}
+	}
+   
 	return temp;
 }

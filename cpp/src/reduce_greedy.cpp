@@ -2,6 +2,30 @@
 #include "Graph.h"
 #include <algorithm>
 
+typedef vector<vector<int> > adj_t;
+
+adj_t compute_adjacency(const compat_t& ct){
+	adj_t A(ct.size());
+
+	map<skey_t, int> keyindex;
+	int count = 0;
+	for(compat_t::const_iterator it=ct.begin(); it!=ct.end(); it++){
+		int index1 = count;
+		keyindex[it->first] = count++;
+		const set<skey_t>& curr = it->second;
+		for(set<skey_t>::const_iterator jt = curr.begin(); jt!=curr.end(); jt++){
+			skey_t key2 = *jt;
+			int index2 = keyindex[key2];
+
+			A[index1].push_back(index2);
+			A[index2].push_back(index1);
+		}
+
+	}
+
+	return A;
+}
+
 vector<skey_t> read_keylist(const compat_t& ct){
 	vector<skey_t> keylist;
 	for(compat_t::const_iterator it = ct.begin(); it!=ct.end(); it++)

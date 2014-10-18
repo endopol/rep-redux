@@ -1,3 +1,21 @@
+/*
+ * =====================================================================================
+ *
+ *       Filename:  fsm.h
+ *
+ *    Description:  Classes and functions for manipulation of Finite State Machines.
+ *
+ *        Version:  1.0
+ *        Created:  10/17/2014 12:13:55 PM
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  Joshua Hernandez (jah), endopol@gmail.com
+ *   Organization:  UCLA Computer Vision Lab
+ *
+ * =====================================================================================
+ */
+
 #ifndef FSM_H
 #define FSM_H
 
@@ -12,7 +30,20 @@
 
 using namespace std;
 
-/* INPUT/OUTPUT CLASSES */
+/* #####   EXPORTED TYPE DEFINITIONS   ############################################## */
+
+/* Input/output types */
+typedef char in_t;
+typedef int out_t;
+const out_t UNDEFINED = -1;
+
+/*
+ * =====================================================================================
+ *        Class:  skey_t
+ *  Description:  Comparable state key class, serving as unique identifiers for states.
+ * =====================================================================================
+ */
+
 class skey_t{
 	int keynum;
 public:
@@ -26,12 +57,7 @@ public:
 	friend ostream& operator<<(ostream& out, const skey_t& right);	
 };
 
-
-
-typedef char in_t;
-typedef int out_t;
-const out_t UNDEFINED = -1;
-
+/* Output (control, state) pair */
 typedef struct outpair{
 	out_t output;
 	skey_t state;
@@ -42,8 +68,16 @@ typedef struct outpair{
 } outpair;
 
 
+/*
+ * =====================================================================================
+ *        Class:  state
+ *  Description:  Implements a general-purpose input/output function with transfer 
+ *  functions to other states (known to this state by their keys).  Mappings are stored
+ *  in the "io_map" field.
+ * =====================================================================================
+ */
 
-/* STATE CLASS */
+/* Input/output map */
 typedef map<in_t, outpair> io_map_t;
 
 class fsm;
@@ -52,7 +86,6 @@ class state{
 protected:
 	skey_t key;
 	io_map_t io_map;
-
 	bool test_io_map(in_t new_in, outpair new_outpair) const;	
 
 public:
@@ -60,31 +93,42 @@ public:
 	state(skey_t new_key);
 	state(skey_t new_key, io_map_t new_io_map);	
 
+    /* Comparison/combination functions */
 	bool test_io_map(const state& s) const;
 	bool add_io_map(const state& s);
 	bool add_io_map(in_t new_in, outpair new_outpair);
 	bool add_io_map(in_t new_in, outpair new_outpair, bool replace);
 
-	outpair operator()(in_t input) const;
+    /* Iterator routines */
+
+	friend ostream& operator<<(ostream& out, const state& right);
+
+    /* Accessor methods */
+    outpair operator()(in_t input) const;
 	virtual io_map_t::const_iterator find(in_t input) const;
 	io_map_t::const_iterator begin() const;
 	io_map_t::const_iterator end() const;
 
-	friend ostream& operator<<(ostream& out, const state& right);
-
-	skey_t get_key() const {return key;}
-	int get_size() const {return io_map.size();}
-	io_map_t& get_io_map() {return io_map;}
+    skey_t get_key() const;
+    int get_size() const;
+    io_map_t& get_io_map();
+        
 
 	friend class fsm;
 };
 
 
-typedef vector<set<skey_t> > cover_t;
-typedef map<skey_t, set<skey_t> > compat_t;
+/*
+ * =====================================================================================
+ *        Class:  fsm
+ *  Description:  Finite State Machine - a graph of states, with edges defined by their
+ *  transfer functions.  States are stored in the "state_map" field.
+ * =====================================================================================
+ */
+
+/* Key-to-state map */
 typedef map<skey_t, state> state_map_t;
 
-/* FSM CLASS */
 class fsm{
 
 protected:	
@@ -101,42 +145,63 @@ public:
 	fsm(){}
 	fsm(string filename);
 
+    /* State Manipulation */
 	state& add_state();
 	state& add_state(skey_t new_key);
 	state& find_state(skey_t query_key);
 
-	// Public operating interface
+	/* Public operating interface */
 	void reset();
 	outpair operate(in_t input, ostream& out);
 	vector<outpair> operate(const vector<in_t>& in_vec, ostream& out);
 	skey_t get_active_state() const;
 	skey_t get_initial_state() const;
-	void set_initial_state(skey_t new_initial_state){ initial_state = new_initial_state; }
+	void set_initial_state(skey_t new_initial_state);
 
-	void combine(skey_t k1, skey_t k2);
+    /* Accessors */
+	state_map_t& get_state_map();
+	int get_size() const;
 
+    /* Read/Write routines */
+   	void save_dot(ostream& out) const;
+	friend void save_dot(string filename, const fsm& right);
 	friend ostream& operator<<(ostream& out, const fsm& right);
 	friend istream& operator>>(istream& in, fsm& right);	
 
-	friend compat_t compute_compat(fsm& right);
-
-	state_map_t& get_state_map(){ return state_map; }
-	int get_size() const { return state_map.size(); }
-
-	void save_dot(ostream& out) const;
-	friend void save_dot(string filename, const fsm& right);
 };
 
+
+/* #####   EXPORTED FUNCTION DECLARATIONS   ######################################### */
+/*
+ * =====================================================================================
+ *         Type:  compat_t
+ *  Description:  Map to sets of keys, representing the compatibility relations (ability
+ *  to be combined without affecting performance) between states of an fsm.
+ * =====================================================================================
+ */
+typedef map<skey_t, set<skey_t> > compat_t;
+
+compat_t compute_compat(fsm& right);
+void symmetrize(compat_t& compat);
+float density(compat_t& compat);
 ostream& operator<<(ostream& out, const compat_t& right);
-ostream& operator<<(ostream& out, const cover_t& right);
-fsm reduce(const fsm& orig, const cover_t& X);
+
+/*
+ * =====================================================================================
+ *         Type:  cover_t
+ *  Description:  Vector of sets of keys, representing a set of cliques (sets of nodes 
+ *  which are all mutually compatible) on a given fsm.
+ * =====================================================================================
+ */
+typedef vector<set<skey_t> > cover_t;
+
+fsm reduce(fsm& orig, const cover_t& X);
+
 bool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat);
 bool add_to_clique_symmetric(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat);
-void symmetrize(compat_t& compat);
-compat_t complement(compat_t& compat);
+ostream& operator<<(ostream& out, const cover_t& right);
 
 
-typedef vector<vector<int> > adj_t;
-adj_t compute_adjacency(const compat_t& ct);
+bool verify_cover(compat_t& ct, cover_t& x);
 
 #endif

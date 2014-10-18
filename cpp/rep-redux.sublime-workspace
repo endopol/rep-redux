@@ -4,6 +4,162 @@
 		"selected_items":
 		[
 			[
+				"get_state",
+				"get_state_map"
+			],
+			[
+				"a",
+				"advance"
+			],
+			[
+				"io",
+				"io_map"
+			],
+			[
+				"oir",
+				"orig_state"
+			],
+			[
+				"get",
+				"get_key"
+			],
+			[
+				"out",
+				"outpair"
+			],
+			[
+				"io_",
+				"io_map"
+			],
+			[
+				"state",
+				"state_map"
+			],
+			[
+				"curr",
+				"currpair"
+			],
+			[
+				"k",
+				"get_key"
+			],
+			[
+				"v",
+				"verbose"
+			],
+			[
+				"dump",
+				"dump_stats"
+			],
+			[
+				"dum",
+				"dump_stats"
+			],
+			[
+				"MAX",
+				"MAX_TIME"
+			],
+			[
+				"IF",
+				"ifdef"
+			],
+			[
+				"cover",
+				"cover_size"
+			],
+			[
+				"de",
+				"decision_tree"
+			],
+			[
+				"comput",
+				"compute_compat"
+			],
+			[
+				"patho",
+				"pathological_tree"
+			],
+			[
+				"map",
+				"map1"
+			],
+			[
+				"t",
+				"tree_size"
+			],
+			[
+				"min",
+				"mincliques"
+			],
+			[
+				"MAX_",
+				"MAX_STATES"
+			],
+			[
+				"DE",
+				"DEPTH"
+			],
+			[
+				"DEP",
+				"DEPTH_STEP"
+			],
+			[
+				"state_",
+				"state_map"
+			],
+			[
+				"num",
+				"num_states"
+			],
+			[
+				"sta",
+				"state_map"
+			],
+			[
+				"it",
+				"iterator"
+			],
+			[
+				"CLI",
+				"CLIQUER_SRC"
+			],
+			[
+				"CLIQUER",
+				"CLIQUER_SOURCE_DIR"
+			],
+			[
+				"cur",
+				"curr_set"
+			],
+			[
+				"s",
+				"set"
+			],
+			[
+				"e",
+				"end"
+			],
+			[
+				"num_",
+				"num_singletons"
+			],
+			[
+				"cloc",
+				"clock_t"
+			],
+			[
+				"ge",
+				"get_key"
+			],
+			[
+				"treef",
+				"treefile0"
+			],
+			[
+				"po",
+				"poisson_distribution"
+			],
+			[
 				"las",
 				"last_key"
 			],
@@ -30,14 +186,6 @@
 			[
 				"reduc",
 				"reduce_exact"
-			],
-			[
-				"get",
-				"get_state_map"
-			],
-			[
-				"io_",
-				"io_map_t"
 			],
 			[
 				"find",
@@ -80,10 +228,6 @@
 				"erase_list"
 			],
 			[
-				"e",
-				"emulates"
-			],
-			[
 				"emul",
 				"emulation"
 			],
@@ -112,10 +256,6 @@
 				"const_iterator"
 			],
 			[
-				"state",
-				"state_map_t"
-			],
-			[
 				"to",
 				"top_it"
 			],
@@ -136,16 +276,8 @@
 				"get_depth"
 			],
 			[
-				"ge",
-				"get_key"
-			],
-			[
 				"ou",
 				"outpair"
-			],
-			[
-				"a",
-				"add_io_map"
 			],
 			[
 				"old_",
@@ -172,16 +304,8 @@
 				"getKey"
 			],
 			[
-				"de",
-				"decision_tree"
-			],
-			[
 				"tree",
 				"treefile"
-			],
-			[
-				"curr",
-				"curr_state"
 			],
 			[
 				"net",
@@ -198,10 +322,6 @@
 			[
 				"be",
 				"begin"
-			],
-			[
-				"io",
-				"io_map_t"
 			]
 		]
 	},
@@ -211,47 +331,40 @@
 			"file": "src/main.cpp",
 			"settings":
 			{
-				"buffer_size": 1227,
+				"buffer_size": 5440,
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/reduce_censi.cpp",
+			"settings":
+			{
+				"buffer_size": 2955,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/reduce_alberto.cpp",
+			"settings":
+			{
+				"buffer_size": 3849,
+				"line_ending": "Unix",
+				"name": "// find  maximum independent set"
 			}
 		},
 		{
 			"file": "src/reduce_exact.cpp",
 			"settings":
 			{
-				"buffer_size": 3329,
+				"buffer_size": 2769,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "CMakeLists.txt",
+			"file": "include/Graph.h",
 			"settings":
 			{
-				"buffer_size": 1073,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/reduce_greedy.cpp",
-			"settings":
-			{
-				"buffer_size": 1332,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/state.cpp",
-			"settings":
-			{
-				"buffer_size": 2419,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/fsm.cpp",
-			"settings":
-			{
-				"buffer_size": 7816,
+				"buffer_size": 2920,
 				"line_ending": "Unix"
 			}
 		},
@@ -259,7 +372,42 @@
 			"file": "src/reduce_josh.cpp",
 			"settings":
 			{
-				"buffer_size": 1677,
+				"buffer_size": 727,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "include/fsm.h",
+			"settings":
+			{
+				"buffer_size": 3341,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "#include \"fsm.h\"\n\n/* skey_t member functions */\nskey_t::skey_t(){\n	keynum = -1;\n}\n\nskey_t::skey_t(int new_keynum){\n	keynum = new_keynum;\n}\n\nbool skey_t::operator<(const skey_t& right) const {		\n		return keynum<right.keynum;\n}\n\nbool skey_t::operator==(const skey_t& right) const {		\n		return keynum==right.keynum;\n}\n\nistream& operator>>(istream& in, skey_t& right){\n	string temp;\n	in >> temp;\n\n	istringstream iss(temp.substr(1));\n\n	iss >> right.keynum;\n\n	return in;\n}\n\nostream& operator<<(ostream& out, const skey_t& right){\n	out << \"q\" << right.keynum;\n\n	return out;\n}\n\n/* FSM member functions */\n\nfsm::fsm(string filename){\n	ifstream in(filename.c_str());\n	in >> (*this);\n	in.close();\n}\n\nstate& fsm::add_state(){\n	skey_t new_key(state_map.size());\n	// cout << \"Created key \" << new_key << endl;\n	return add_state(new_key);\n}\n\nstate& fsm::add_state(skey_t new_key){\n	return state_map.insert(pair<skey_t, state>(new_key, state(new_key))).first->second;\n}\n\nstate& fsm::find_state(skey_t query_key) {\n	return state_map.find(query_key)->second;\n}\n\noutpair fsm::operate(in_t input, ostream& out){\n	outpair op = (*active_state)(input);\n	active_state = &find_state(op.state);\n\n	if(out != NULL){\n		out << \"(\" << input << \" -> \";\n		if(op.output==UNDEFINED)\n			out << \"UNDEFINED\";\n		else \n			out << op.output;\n		out << \" @ \" << op.state << \") \";\n}\n	return op;\n}\n\nvector<outpair> fsm::operate(const vector<in_t>& in_vec, ostream& out){\n	vector<outpair> op_vec;\n	for(int i=0; i<in_vec.size(); i++){\n		in_t curr_in = in_vec[i];\n		outpair curr_op = operate(curr_in, out);\n		op_vec.push_back(curr_op);	\n	}\n	out << \"\\n\\n\";\n\n	return op_vec;\n}\n\nskey_t fsm::get_active_state() const{\n	return active_state->key;\n}\n\nskey_t fsm::get_initial_state() const{\n	return initial_state;\n}\n\nvoid fsm::reset(){\n	active_state = &find_state(initial_state);\n}\n\nbool test_compat(skey_t k1, skey_t k2, const compat_t& compat) {\n	if(k1==k2)\n		return true;\n\n	const set<skey_t>	&ks1 = compat.find(k1)->second,\n						&ks2 = compat.find(k2)->second;\n\n    set<skey_t>::iterator it1 = ks1.find(k2), it2 = ks2.find(k1);\n	return (it1 != ks1.end()) || (it2 != ks2.end());\n}\n\nbool test_compat(state& s1, state& s2, const compat_t& compat) {\n	if(!s1.test_io_map(s2))\n		return false;\n\n	const io_map_t& io_map = s1.get_io_map();\n	for(io_map_t::const_iterator it = io_map.begin(); it != io_map.end(); it++){\n		outpair op2 = s2(it->first);		\n		if(op2.output==UNDEFINED)\n			continue;\n\n		skey_t	k1 = it->second.state,\n				k2 = op2.state;	\n\n		if(!test_compat(k1, k2, compat)){\n			// cout << s1.key << \", \" << s2.key << \" (\" << it->first << \"):  \" << k1 << \", \" << k2 << endl;\n			return false;\n		}\n	}\n	return true;\n}\n\nbool iterate_compat(compat_t& compat, fsm& orig){\n	//print_compat(cout);\n\n	bool changed = false;\n	for(compat_t::iterator it = compat.begin(); it != compat.end(); it++){		\n\n		set<skey_t>& key_set = it->second;\n		for(set<skey_t>::iterator kit = key_set.begin(); kit != key_set.end(); kit++){\n			if(!test_compat(orig.find_state(it->first), orig.find_state(*kit), compat)){\n//			if(!test_compat(it->first, *kit)){\n\n				changed = true;\n				key_set.erase(*kit);\n			}\n		}\n	}\n\n	return changed;\n}\n\ncompat_t compute_compat(fsm& f){\n\n	compat_t compat;\n\n	const state_map_t& sm = f.get_state_map();\n\n	for(state_map_t::const_iterator it = sm.begin(); it != sm.end(); it++){	\n		compat[it->first] = set<skey_t>();\n		set<skey_t>& key_set = compat[it->first];\n		for(state_map_t::const_iterator jt = sm.begin(); jt != it; jt++)\n			key_set.insert(jt->first);\n	}\n\n	while(iterate_compat(compat, f));\n\n	return compat;\n}\n\n/* I/O routines */\n\nistream& operator>> (istream& in, fsm& right){\n	string temp, new_line, line_head;\n	if(in>>temp && temp==\"fsm\" && in>>right.initial_state){\n		in.ignore();\n\n		state* curr_state;\n		while(getline(in, new_line)){\n			stringstream ss(new_line);\n			\n			in_t new_in;\n			out_t new_out;\n			skey_t new_key;\n\n			ss >> line_head;\n			if(line_head==\"state\" && ss>>new_key)\n				curr_state = &right.add_state(new_key);\n			else{\n				string in_string, out_string, key_string;\n\n				stringstream ms(new_line);\n				if(		getline(ms, in_string, ':') && \n						getline(ms, out_string, '@') &&	\n						getline(ms, key_string)){\n					\n					stringstream in_stream(in_string), \n								 out_stream(out_string), \n								 key_stream(key_string);\n\n					if(in_stream>>new_in && out_stream >> new_out && key_stream >> new_key)\n						curr_state->add_io_map(new_in, outpair(new_out, new_key));\n				}\n			}\n		}\n	}\n\n	return in;\n}\n\nostream& operator<< (ostream& out, const fsm& right){\n	out << \"fsm \" << right.initial_state << endl;\n	state_map_t state_map = right.state_map;\n	for(state_map_t::const_iterator sit = state_map.begin(); sit != state_map.end(); sit++){\n		const state& curr_state = sit->second;\n		out << curr_state;\n	}\n	return out;\n}\n\nostream& operator<<(ostream& out, const compat_t& right){\n	for(compat_t::const_iterator it = right.begin(); it != right.end(); it++){\n		out << it->first << \": \";\n		const set<skey_t>& key_set = it->second;\n		for(set<skey_t>::iterator kit = key_set.begin(); kit !=key_set.end(); kit++)\n		out << *kit << \" \";\n		out << endl;\n	}\n	out << endl;\n\n	return out;\n}\n\nvoid save_dot(string filename, const fsm& right){\n	ofstream out(filename.c_str());\n	right.save_dot(out);\n	out.close();\n}\n\n\nvoid fsm::save_dot(ostream& out) const{\n	const int width  = 80, height = 10;\n\n	string arctxt = \"->\",\n		labeltxt = \"[label=\\\"%s\\\", color=\\\"red\\\", fontname=\\\"NimbusMonL-Regu\\\", labeljust=\\\"r\\\", fontsize=10]\",\n		edgeformat = \"  %d \" + arctxt + \" %d \" + labeltxt + \";\\n\";\n\n	out << \"digraph G {\\n\";\n	out << \"  center=1;\\n\";\n	out << \"  size=\\\"\" << width << \",\" << height << \"\\\";\\n\";\n\n	int node_index = 0;\n	map<skey_t, int> node_indices;\n	for(state_map_t::const_iterator it = state_map.begin(); it!=state_map.end(); it++){		\n		skey_t found_key = it->first;\n		node_indices[found_key] = node_index;\n		out << \"  \" << node_index << \" [label=\\\"\" << found_key << \"\\\", shape=\\\"circle\\\"];\\n\";\n		node_index++;\n	}\n\n	int node1_index = 0;\n	for(state_map_t::const_iterator it = state_map.begin(); it!=state_map.end(); it++){\n		map<skey_t, string> edge_labels;\n		const state& found_state = it->second;\n		io_map_t found_map = found_state.io_map;\n		for(io_map_t::iterator jt = found_map.begin(); jt!=found_map.end(); jt++){\n			outpair op = jt->second;\n			stringstream ss;\n			ss << jt->first << \":\" << op.output << \"\\\\n\";\n			edge_labels[op.state] += ss.str(); \n		}\n		for(map<skey_t, string>::iterator jt = edge_labels.begin(); jt!=edge_labels.end(); jt++){			\n			int node2_index = node_indices[jt->first];\n			char edgestring[200];		\n			sprintf(edgestring, edgeformat.c_str(), node1_index, node2_index, jt->second.c_str());\n			out << edgestring;			\n		}		\n		node1_index++;\n	}\n	out << \"}\\n\";\n}\n\nostream& operator<<(ostream& out, const cover_t& right){\n\n	for(int i=0; i<right.size(); i++){\n		const set<skey_t>& curr = right[i];\n		cout << \"{ \";\n\n		for(set<skey_t>::const_iterator it = curr.begin(); it!=curr.end(); it++)\n			cout << *it << \" \";\n\n		cout << \"} \";\n	}\n\n	return out;\n}\n\n\ntypedef map<skey_t, skey_t> clique_map_t;\n\nfsm reduce(fsm& orig, const cover_t& X){\n	fsm temp;\n\n	/* Compute name reassignments */\n	clique_map_t clique_map;\n	for(int i=0; i<X.size(); i++){\n		state& new_state = temp.add_state();\n		skey_t new_key = new_state.get_key();\n		for(set<skey_t>::const_iterator it = X[i].begin(); it!=X[i].end(); it++){\n			clique_map[*it] = new_key;\n			new_state.add_io_map(orig.find_state(*it));\n		}\n	}\n\n	state_map_t& sm = temp.get_state_map();\n	for(state_map_t::iterator it = sm.begin(); it!=sm.end(); it++){\n		state& curr = it->second;\n		io_map_t& im = curr.get_io_map();\n\n		for(io_map_t::iterator jt = im.begin(); jt!=im.end(); jt++){\n			jt->second.state = clique_map[jt->second.state];\n		}\n	}\n\n	temp.set_initial_state(clique_map[orig.get_initial_state()]);\n\n	return temp;\n}\n\n\nbool add_to_clique_symmetric(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat){\n	//cout << \"Adding \" << new_entry << \" to clique (\" << new_clique << \").\\n\";\n\n	for(set<skey_t>::iterator it = new_clique.begin(); it!=new_clique.end(); it++){	\n		compat_t::const_iterator mi = compat.find(*it);\n\n		const set<skey_t>& kr = mi->second;\n\n		if(kr.find(new_entry)==kr.end())\n			return false;\n	}\n\n	new_clique.insert(new_entry);\n	return true;\n}\n\nbool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat){\n	//cout << \"Adding \" << new_entry << \" to clique (\" << new_clique << \").\\n\";\n\n	compat_t::const_iterator mi = compat.find(new_entry);\n	const set<skey_t>& kc = mi->second;\n\n	for(set<skey_t>::iterator it = new_clique.begin(); it!=new_clique.end(); it++){	\n		compat_t::const_iterator mi = compat.find(*it);\n\n		const set<skey_t>& kr = mi->second;\n\n		if(kr.find(new_entry)==kr.end() && kc.find(*it)==kc.end())\n			return false;\n	}\n\n	new_clique.insert(new_entry);\n	return true;\n}\n\nvoid symmetrize(compat_t& compat){\n	for(compat_t::iterator it = compat.begin(); it!=compat.end(); it++){\n		skey_t curr_key = it->first;\n		set<skey_t>& curr_set = it->second;\n		for(set<skey_t>::iterator jt = curr_set.begin(); jt!=curr_set.end(); jt++){\n			set<skey_t>& neighbor_set = compat[*jt];\n\n			neighbor_set.insert(curr_key);\n		}\n	}\n}\n\nbool verify_cover(compat_t& ct, cover_t& X){\n	int cover_size = 0;\n	// cout << endl;\n	for(int i=0; i<X.size(); i++){\n		// cout << X[i].size() << \" \";\n		cover_size += X[i].size();\n	}\n	// cout << endl;\n\n	return (cover_size==ct.size());\n}\n\nfloat density(compat_t& compat){\n	symmetrize(compat);\n\n	int count = 0;\n	for(compat_t::const_iterator it = compat.begin(); it!=compat.end(); it++){\n		count+= it->second.size();\n	}\n\n	return count/((float) compat.size()*compat.size());\n}",
+			"file": "src/fsm.cpp",
+			"file_size": 10131,
+			"file_write_time": 130575715230455168,
+			"settings":
+			{
+				"buffer_size": 9641,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/pathological_tree.cpp",
+			"settings":
+			{
+				"buffer_size": 1639,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/poisson_fsm.cpp",
+			"settings":
+			{
+				"buffer_size": 1427,
 				"line_ending": "Unix"
 			}
 		}
@@ -267,9 +415,21 @@
 	"build_system": "Packages/Makefile/Make.sublime-build",
 	"command_palette":
 	{
-		"height": 268.0,
+		"height": 348.0,
 		"selected_items":
 		[
+			[
+				"pac",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
 			[
 				"package",
 				"Package Control: Install Package"
@@ -334,18 +494,28 @@
 		"/home/josh/git/rep-redux/cpp",
 		"/home/josh/git/rep-redux/cpp/data",
 		"/home/josh/git/rep-redux/cpp/include",
-		"/home/josh/git/rep-redux/cpp/src"
+		"/home/josh/git/rep-redux/cpp/src",
+		"/home/josh/git/rep-redux/cpp/thirdparty",
+		"/home/josh/git/rep-redux/cpp/thirdparty/cliquer-1.21"
 	],
 	"file_history":
 	[
+		"/home/josh/git/rep-redux/cpp/build/CMakeFiles/2.8.12.2/CompilerIdC/CMakeCCompilerId.c",
+		"/home/josh/git/rep-redux/cpp/build/CMakeFiles/progress.marks",
+		"/home/josh/git/rep-redux/cpp/CMakeLists.txt",
+		"/home/josh/git/rep-redux/cpp/src/fsm.cpp",
+		"/home/josh/git/rep-redux/cpp/src/Graph.cpp",
+		"/home/josh/git/rep-redux/cpp/stats/data-02.txt",
+		"/home/josh/git/rep-redux/cpp/src/reduce_greedy.cpp",
+		"/home/josh/git/rep-redux/cpp/src/poisson_fsm.cpp",
+		"/home/josh/git/rep-redux/cpp/src/reduce_censi.cpp",
+		"/home/josh/git/rep-redux/cpp/src/state.cpp",
+		"/home/josh/git/rep-redux/cpp/src/decision_tree.cpp",
 		"/home/josh/git/rep-redux/cpp/rep-redux.sublime-project",
 		"/build/buildd/eglibc-2.19/nptl/sysdeps/unix/sysv/linux/raise.c",
 		"/home/josh/git/rep-redux/cpp/src/reduce_exact.cpp",
-		"/home/josh/git/rep-redux/cpp/src/reduce_censi.cpp",
 		"/home/josh/git/rep-redux/cpp/src/reduce_josh_exhaustive.cpp",
 		"/home/josh/git/rep-redux/cpp/src/emulation.cpp",
-		"/home/josh/git/rep-redux/cpp/src/decision_tree.cpp",
-		"/home/josh/git/rep-redux/cpp/CMakeLists.txt",
 		"/usr/include/c++/4.6/bits/stl_tree.h",
 		"/home/josh/.config/sublime-text-3/Packages/SublimeGDB/SublimeGDB.sublime-settings",
 		"/home/josh/git/rep-redux/cpp/Makefile",
@@ -375,6 +545,12 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"cout",
+			"cout << endl",
+			"operator<<",
+			"graph",
+			">());\n",
+			">\n",
 			"print_compat",
 			"CMAKE_INCLUDE_PATH",
 			"; ",
@@ -439,7 +615,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 7,
 			"sheets":
 			[
 				{
@@ -448,19 +624,49 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1227,
+						"buffer_size": 5440,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								63,
-								63
+								347,
+								347
 							]
 						],
 						"settings":
 						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 135.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/reduce_censi.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2955,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								79,
+								79
+							]
+						],
+						"settings":
+						{
+							"spell_check": false,
 							"syntax": "Packages/C++/C++.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
@@ -472,57 +678,30 @@
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "src/reduce_exact.cpp",
+					"buffer": 2,
+					"file": "src/reduce_alberto.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3329,
+						"buffer_size": 3849,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								328,
-								328
+								2858,
+								2858
 							]
 						],
 						"settings":
 						{
+							"auto_name": "// find  maximum independent set",
 							"syntax": "Packages/C++/C++.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "CMakeLists.txt",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1073,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								306,
-								306
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CMake/CMake.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 168.0,
+						"translation.y": 1710.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 5,
@@ -530,19 +709,19 @@
 				},
 				{
 					"buffer": 3,
-					"file": "src/reduce_greedy.cpp",
+					"file": "src/reduce_exact.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1332,
+						"buffer_size": 2769,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1332,
-								1332
+								1189,
+								1189
 							]
 						],
 						"settings":
@@ -551,56 +730,57 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 535.0,
+						"translation.y": 585.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
 					"buffer": 4,
-					"file": "src/state.cpp",
+					"file": "include/Graph.h",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2419,
+						"buffer_size": 2920,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2178,
-								2178
+								0,
+								0
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 589.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
 					"buffer": 5,
-					"file": "src/fsm.cpp",
+					"file": "src/reduce_josh.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7816,
+						"buffer_size": 727,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								194,
-								194
+								42,
+								42
 							]
 						],
 						"settings":
@@ -612,24 +792,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
 					"buffer": 6,
-					"file": "src/reduce_josh.cpp",
+					"file": "include/fsm.h",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1677,
+						"buffer_size": 3341,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1075,
-								1075
+								2958,
+								2958
 							]
 						],
 						"settings":
@@ -638,10 +818,97 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 323.0,
+						"translation.y": 1711.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/fsm.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9641,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								464,
+								464
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 405.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/pathological_tree.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1639,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								247,
+								247
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "src/poisson_fsm.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1427,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								401,
+								401
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -664,7 +931,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 25.0
+		"height": 23.0
 	},
 	"input":
 	{
@@ -716,7 +983,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 188.0
+		"height": 222.0
 	},
 	"output.find_results":
 	{
@@ -725,7 +992,7 @@
 	"project": "rep-redux.sublime-project",
 	"replace":
 	{
-		"height": 64.0
+		"height": 42.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -738,11 +1005,15 @@
 	},
 	"select_project":
 	{
-		"height": 0.0,
+		"height": 500.0,
 		"selected_items":
 		[
+			[
+				"",
+				"~/git/rep-redux/cpp/rep-redux.sublime-project"
+			]
 		],
-		"width": 0.0
+		"width": 380.0
 	},
 	"select_symbol":
 	{

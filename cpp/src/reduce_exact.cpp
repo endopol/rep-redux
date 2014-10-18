@@ -1,22 +1,7 @@
 #include <list>
 #include <algorithm>
 #include "decision_tree.h"
-
-template <typename T>
-ostream& operator<<(ostream& out, const set<T>& right){
-	out << "Set " << right.size() << " items:";
-	for(typename set<T>::iterator it = right.begin(); it!=right.end(); it++)
-		out << *it << " ";
-	return out;
-}
-
-template <typename T>
-ostream& operator<<(ostream& out, const list<T>& right){
-	out << "Set " << right.size() << " items:";
-	for(typename list<T>::const_iterator it = right.begin(); it!=right.end(); it++)
-		out << " " << *it;
-	return out;
-}
+#include "reduce_alberto.cpp"
 
 
 void pvect(vector<skey_t>::iterator begin, vector<skey_t>::iterator end){
@@ -26,10 +11,98 @@ void pvect(vector<skey_t>::iterator begin, vector<skey_t>::iterator end){
 	}
 }
 
-bool list_advance(vector<skey_t>::iterator begin, std::vector<skey_t>::iterator end){
-	// cout << "Advancing list: ";
-	// pvect(begin, end);
+
+
+bool list_advance(vector<skey_t>::iterator begin, std::vector<skey_t>::iterator end);
+
+int cover_recursive(const compat_t& compat, 
+	vector<skey_t>::iterator begin, vector<skey_t>::iterator end,
+	int num_cliques, cover_t ct, int lo_bound, int& minmax, cover_t& argmin,
+	long& time_count, long max_count);
+
+
+cover_t cover_exact(fsm& orig, int& lo_bound, long max_count){
+	compat_t compat = compute_compat(orig);
+	symmetrize(compat);
+
+    set<skey_t> first_clique;
+	vector<skey_t> free_keys;
+	for(compat_t::iterator it = compat.begin(); it!=compat.end(); it++){
+        set<skey_t>& curr = it->second;
+        
+        if(curr.size()==(compat.size()-1)) 
+            // some clever reduction - these states shouldn't have any effect
+
+            first_clique.insert(it->first);
+        else
+		    free_keys.push_back(it->first);
+    }
+
+	cover_t temp, argmin;
+	temp.push_back(set<skey_t>());
+
+	cover_t ct = cover_alberto(orig, lo_bound);
+	int maxcliques = ct.size();
+	if(lo_bound==maxcliques)
+		return ct;
+
+	long time_count = 0;
+	lo_bound = cover_recursive(compat, free_keys.begin(), free_keys.end(), 1, temp, lo_bound, maxcliques, argmin, time_count, max_count);
+
+	return argmin;
+}
+
+int cover_recursive(const compat_t& compat,
+	vector<skey_t>::iterator begin, vector<skey_t>::iterator end,
+	int num_cliques, cover_t ct, int lo_bound, int& mincliques, cover_t& argmin, 
+	long& time_count, long max_count){	
+
+	time_count++;
+	if(time_count>=max_count)
+		return lo_bound;
+
+	// cout << "Lower bound: " << lo_bound << ", upper bound: " << mincliques << endl;
+	// for(vector<skey_t>::iterator it = begin; it!=end; it++)
+	// 	cout << *it << " ";
 	// cout << endl;
+
+	// cout << ct << "\n\n";
+
+	if(mincliques<=lo_bound)
+		return mincliques;
+
+	set<skey_t>* last_clique = &ct.back();
+	skey_t last_key = *begin;	
+
+	if(begin==end){
+		mincliques = num_cliques;
+		argmin = ct;
+	}
+	else{		
+		if(!add_to_clique_symmetric(last_key, *last_clique, compat)){
+			num_cliques++;
+			ct.push_back(set<skey_t>());
+			last_clique = &ct.back();
+
+			last_clique->insert(last_key);
+		}
+
+		if(num_cliques<mincliques){
+			do{								
+				cover_recursive(compat, begin+1, end, num_cliques, ct, lo_bound, mincliques, argmin, time_count, max_count);
+			}while(list_advance(begin+1,end));
+		}
+		
+		last_clique->erase(last_clique->find(last_key));
+	}
+	if(last_clique->size()==0)
+		ct.pop_back();
+
+	return mincliques;
+}
+
+
+bool list_advance(vector<skey_t>::iterator begin, std::vector<skey_t>::iterator end){
 
 	if(begin==end)
 		return false;
@@ -50,83 +123,5 @@ bool list_advance(vector<skey_t>::iterator begin, std::vector<skey_t>::iterator 
 
 	sort(begin+1, end);
 
-	// cout << "to : ";
-	// pvect(begin, end);
-	// cout << endl;
-
 	return true;
-}
-
-void cover_recursive(const compat_t& compat,
-	vector<skey_t>::iterator begin, vector<skey_t>::iterator end,
-	int num_cliques, cover_t ct, int& minmax, cover_t& argmin){	
-
-	if(minmax<=2)
-		return;
-
-	set<skey_t>* last_clique = &ct.back();
-	skey_t last_key = *begin;	
-
-	if(begin==end){
-		minmax = num_cliques;
-		argmin = ct;
-	}
-	else{		
-		if(!add_to_clique_symmetric(last_key, *last_clique, compat)){
-			num_cliques++;
-			ct.push_back(set<skey_t>());
-			last_clique = &ct.back();
-
-			last_clique->insert(last_key);
-		}
-
-		//cout << "Num cliques: " << num_cliques << ". " << ct << endl;
-
-		if(num_cliques<minmax){
-			do{								
-				cover_recursive(compat, begin+1, end, num_cliques, ct, minmax, argmin);
-			}while(list_advance(begin+1,end));
-		}
-		
-		last_clique->erase(last_clique->find(last_key));
-	}
-	if(last_clique->size()==0)
-		ct.pop_back();		
-}
-
-int remove_singletons(compat_t& compat, vector<skey_t> &l, cover_t& ct);
-cover_t cover_exact(fsm& orig){
-	compat_t compat = compute_compat(orig);
-	symmetrize(compat);
-
-	vector<skey_t> free_keys;
-	const state_map_t& sm = orig.get_state_map();
-	for(state_map_t::const_iterator it = sm.begin(); it!=sm.end(); it++)
-		free_keys.push_back(it->first);
-
-	cover_t temp, argmin;
-	int n_singletons = remove_singletons(compat, free_keys, temp);
-
-	temp.push_back(set<skey_t>());
-	int minmax = orig.get_size()-n_singletons;
-	cover_recursive(compat, free_keys.begin(), free_keys.end(), 1, temp, minmax, argmin);
-
-	return argmin;
-}
-
-int remove_singletons(compat_t& compat, vector<skey_t> &l, cover_t& ct){
-	int num_singletons = 0;
-	for(vector<skey_t>::iterator it = l.begin(); it!=l.end(); it++){
-		const set<skey_t>& curr_set = compat[*it];
-		if(curr_set.size()==0){
-			ct.push_back(set<skey_t>());
-			ct.back().insert(*it);
-
-			l.erase(it);		
-			num_singletons++;
-			cout << "Removing Singleton " << *it << ".\n";
-		}
-
-	}
-	return num_singletons;
 }

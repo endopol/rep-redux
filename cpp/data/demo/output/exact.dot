@@ -1,0 +1,12 @@
+digraph G {
+  center=1;
+  size="80,10";
+  0 [label="q0", shape="circle"];
+  1 [label="q1", shape="circle"];
+  0 -> 0 [label="a:8\ne:13\n", color="red", fontname="NimbusMonL-Regu", labeljust="r", fontsize=10];
+  0 -> 0 [label="b:2\nc:8\nf:8\nh:19\n", color="red", fontname="NimbusMonL-Regu", labeljust="r", fontsize=10];
+  0 -> 1 [label="i:14\nj:4\n", color="red", fontname="NimbusMonL-Regu", labeljust="r", fontsize=10];
+  1 -> 0 [label="b:19\nc:18\ne:14\nf:9\n", color="red", fontname="NimbusMonL-Regu", labeljust="r", fontsize=10];
+  1 -> 0 [label="h:12\n", color="red", fontname="NimbusMonL-Regu", labeljust="r", fontsize=10];
+  1 -> 1 [label="i:4\nj:16\n", color="red", fontname="NimbusMonL-Regu", labeljust="r", fontsize=10];
+}

@@ -8,6 +8,7 @@ fi
 
 # Run dot on all dotfiles
 for DIR in $(ls -d */ 2> /dev/null); do
+	echo Working in directory $DIR...
 	cd $DIR/output;
 	for DOT in $(ls *.dot 2> /dev/null); do
 
