@@ -4,6 +4,38 @@
 		"selected_items":
 		[
 			[
+				"get",
+				"get_size"
+			],
+			[
+				"clique",
+				"clique_indices"
+			],
+			[
+				"com",
+				"compat_t"
+			],
+			[
+				"Gra",
+				"GRAPH_ADD_EDGE"
+			],
+			[
+				"clique_",
+				"clique_map_t"
+			],
+			[
+				"new",
+				"new_index"
+			],
+			[
+				"cover",
+				"cover_t"
+			],
+			[
+				"key",
+				"key_indices"
+			],
+			[
 				"get_state",
 				"get_state_map"
 			],
@@ -18,10 +50,6 @@
 			[
 				"oir",
 				"orig_state"
-			],
-			[
-				"get",
-				"get_key"
 			],
 			[
 				"out",
@@ -62,10 +90,6 @@
 			[
 				"IF",
 				"ifdef"
-			],
-			[
-				"cover",
-				"cover_size"
 			],
 			[
 				"de",
@@ -196,19 +220,11 @@
 				"add_io_map"
 			],
 			[
-				"clique",
-				"clique_map"
-			],
-			[
 				"state_map",
 				"state_map_t"
 			],
 			[
 				"new_",
-				"new_state"
-			],
-			[
-				"new",
 				"new_state"
 			],
 			[
@@ -300,10 +316,6 @@
 				"skey_t"
 			],
 			[
-				"key",
-				"getKey"
-			],
-			[
 				"tree",
 				"treefile"
 			],
@@ -328,43 +340,10 @@
 	"buffers":
 	[
 		{
-			"file": "src/main.cpp",
+			"file": "src/compatibility.cpp",
 			"settings":
 			{
-				"buffer_size": 5440,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/reduce_censi.cpp",
-			"settings":
-			{
-				"buffer_size": 2955,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/reduce_alberto.cpp",
-			"settings":
-			{
-				"buffer_size": 3849,
-				"line_ending": "Unix",
-				"name": "// find  maximum independent set"
-			}
-		},
-		{
-			"file": "src/reduce_exact.cpp",
-			"settings":
-			{
-				"buffer_size": 2769,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "include/Graph.h",
-			"settings":
-			{
-				"buffer_size": 2920,
+				"buffer_size": 8821,
 				"line_ending": "Unix"
 			}
 		},
@@ -380,35 +359,103 @@
 			"file": "include/fsm.h",
 			"settings":
 			{
-				"buffer_size": 3341,
+				"buffer_size": 5863,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "#include \"fsm.h\"\n\n/* skey_t member functions */\nskey_t::skey_t(){\n	keynum = -1;\n}\n\nskey_t::skey_t(int new_keynum){\n	keynum = new_keynum;\n}\n\nbool skey_t::operator<(const skey_t& right) const {		\n		return keynum<right.keynum;\n}\n\nbool skey_t::operator==(const skey_t& right) const {		\n		return keynum==right.keynum;\n}\n\nistream& operator>>(istream& in, skey_t& right){\n	string temp;\n	in >> temp;\n\n	istringstream iss(temp.substr(1));\n\n	iss >> right.keynum;\n\n	return in;\n}\n\nostream& operator<<(ostream& out, const skey_t& right){\n	out << \"q\" << right.keynum;\n\n	return out;\n}\n\n/* FSM member functions */\n\nfsm::fsm(string filename){\n	ifstream in(filename.c_str());\n	in >> (*this);\n	in.close();\n}\n\nstate& fsm::add_state(){\n	skey_t new_key(state_map.size());\n	// cout << \"Created key \" << new_key << endl;\n	return add_state(new_key);\n}\n\nstate& fsm::add_state(skey_t new_key){\n	return state_map.insert(pair<skey_t, state>(new_key, state(new_key))).first->second;\n}\n\nstate& fsm::find_state(skey_t query_key) {\n	return state_map.find(query_key)->second;\n}\n\noutpair fsm::operate(in_t input, ostream& out){\n	outpair op = (*active_state)(input);\n	active_state = &find_state(op.state);\n\n	if(out != NULL){\n		out << \"(\" << input << \" -> \";\n		if(op.output==UNDEFINED)\n			out << \"UNDEFINED\";\n		else \n			out << op.output;\n		out << \" @ \" << op.state << \") \";\n}\n	return op;\n}\n\nvector<outpair> fsm::operate(const vector<in_t>& in_vec, ostream& out){\n	vector<outpair> op_vec;\n	for(int i=0; i<in_vec.size(); i++){\n		in_t curr_in = in_vec[i];\n		outpair curr_op = operate(curr_in, out);\n		op_vec.push_back(curr_op);	\n	}\n	out << \"\\n\\n\";\n\n	return op_vec;\n}\n\nskey_t fsm::get_active_state() const{\n	return active_state->key;\n}\n\nskey_t fsm::get_initial_state() const{\n	return initial_state;\n}\n\nvoid fsm::reset(){\n	active_state = &find_state(initial_state);\n}\n\nbool test_compat(skey_t k1, skey_t k2, const compat_t& compat) {\n	if(k1==k2)\n		return true;\n\n	const set<skey_t>	&ks1 = compat.find(k1)->second,\n						&ks2 = compat.find(k2)->second;\n\n    set<skey_t>::iterator it1 = ks1.find(k2), it2 = ks2.find(k1);\n	return (it1 != ks1.end()) || (it2 != ks2.end());\n}\n\nbool test_compat(state& s1, state& s2, const compat_t& compat) {\n	if(!s1.test_io_map(s2))\n		return false;\n\n	const io_map_t& io_map = s1.get_io_map();\n	for(io_map_t::const_iterator it = io_map.begin(); it != io_map.end(); it++){\n		outpair op2 = s2(it->first);		\n		if(op2.output==UNDEFINED)\n			continue;\n\n		skey_t	k1 = it->second.state,\n				k2 = op2.state;	\n\n		if(!test_compat(k1, k2, compat)){\n			// cout << s1.key << \", \" << s2.key << \" (\" << it->first << \"):  \" << k1 << \", \" << k2 << endl;\n			return false;\n		}\n	}\n	return true;\n}\n\nbool iterate_compat(compat_t& compat, fsm& orig){\n	//print_compat(cout);\n\n	bool changed = false;\n	for(compat_t::iterator it = compat.begin(); it != compat.end(); it++){		\n\n		set<skey_t>& key_set = it->second;\n		for(set<skey_t>::iterator kit = key_set.begin(); kit != key_set.end(); kit++){\n			if(!test_compat(orig.find_state(it->first), orig.find_state(*kit), compat)){\n//			if(!test_compat(it->first, *kit)){\n\n				changed = true;\n				key_set.erase(*kit);\n			}\n		}\n	}\n\n	return changed;\n}\n\ncompat_t compute_compat(fsm& f){\n\n	compat_t compat;\n\n	const state_map_t& sm = f.get_state_map();\n\n	for(state_map_t::const_iterator it = sm.begin(); it != sm.end(); it++){	\n		compat[it->first] = set<skey_t>();\n		set<skey_t>& key_set = compat[it->first];\n		for(state_map_t::const_iterator jt = sm.begin(); jt != it; jt++)\n			key_set.insert(jt->first);\n	}\n\n	while(iterate_compat(compat, f));\n\n	return compat;\n}\n\n/* I/O routines */\n\nistream& operator>> (istream& in, fsm& right){\n	string temp, new_line, line_head;\n	if(in>>temp && temp==\"fsm\" && in>>right.initial_state){\n		in.ignore();\n\n		state* curr_state;\n		while(getline(in, new_line)){\n			stringstream ss(new_line);\n			\n			in_t new_in;\n			out_t new_out;\n			skey_t new_key;\n\n			ss >> line_head;\n			if(line_head==\"state\" && ss>>new_key)\n				curr_state = &right.add_state(new_key);\n			else{\n				string in_string, out_string, key_string;\n\n				stringstream ms(new_line);\n				if(		getline(ms, in_string, ':') && \n						getline(ms, out_string, '@') &&	\n						getline(ms, key_string)){\n					\n					stringstream in_stream(in_string), \n								 out_stream(out_string), \n								 key_stream(key_string);\n\n					if(in_stream>>new_in && out_stream >> new_out && key_stream >> new_key)\n						curr_state->add_io_map(new_in, outpair(new_out, new_key));\n				}\n			}\n		}\n	}\n\n	return in;\n}\n\nostream& operator<< (ostream& out, const fsm& right){\n	out << \"fsm \" << right.initial_state << endl;\n	state_map_t state_map = right.state_map;\n	for(state_map_t::const_iterator sit = state_map.begin(); sit != state_map.end(); sit++){\n		const state& curr_state = sit->second;\n		out << curr_state;\n	}\n	return out;\n}\n\nostream& operator<<(ostream& out, const compat_t& right){\n	for(compat_t::const_iterator it = right.begin(); it != right.end(); it++){\n		out << it->first << \": \";\n		const set<skey_t>& key_set = it->second;\n		for(set<skey_t>::iterator kit = key_set.begin(); kit !=key_set.end(); kit++)\n		out << *kit << \" \";\n		out << endl;\n	}\n	out << endl;\n\n	return out;\n}\n\nvoid save_dot(string filename, const fsm& right){\n	ofstream out(filename.c_str());\n	right.save_dot(out);\n	out.close();\n}\n\n\nvoid fsm::save_dot(ostream& out) const{\n	const int width  = 80, height = 10;\n\n	string arctxt = \"->\",\n		labeltxt = \"[label=\\\"%s\\\", color=\\\"red\\\", fontname=\\\"NimbusMonL-Regu\\\", labeljust=\\\"r\\\", fontsize=10]\",\n		edgeformat = \"  %d \" + arctxt + \" %d \" + labeltxt + \";\\n\";\n\n	out << \"digraph G {\\n\";\n	out << \"  center=1;\\n\";\n	out << \"  size=\\\"\" << width << \",\" << height << \"\\\";\\n\";\n\n	int node_index = 0;\n	map<skey_t, int> node_indices;\n	for(state_map_t::const_iterator it = state_map.begin(); it!=state_map.end(); it++){		\n		skey_t found_key = it->first;\n		node_indices[found_key] = node_index;\n		out << \"  \" << node_index << \" [label=\\\"\" << found_key << \"\\\", shape=\\\"circle\\\"];\\n\";\n		node_index++;\n	}\n\n	int node1_index = 0;\n	for(state_map_t::const_iterator it = state_map.begin(); it!=state_map.end(); it++){\n		map<skey_t, string> edge_labels;\n		const state& found_state = it->second;\n		io_map_t found_map = found_state.io_map;\n		for(io_map_t::iterator jt = found_map.begin(); jt!=found_map.end(); jt++){\n			outpair op = jt->second;\n			stringstream ss;\n			ss << jt->first << \":\" << op.output << \"\\\\n\";\n			edge_labels[op.state] += ss.str(); \n		}\n		for(map<skey_t, string>::iterator jt = edge_labels.begin(); jt!=edge_labels.end(); jt++){			\n			int node2_index = node_indices[jt->first];\n			char edgestring[200];		\n			sprintf(edgestring, edgeformat.c_str(), node1_index, node2_index, jt->second.c_str());\n			out << edgestring;			\n		}		\n		node1_index++;\n	}\n	out << \"}\\n\";\n}\n\nostream& operator<<(ostream& out, const cover_t& right){\n\n	for(int i=0; i<right.size(); i++){\n		const set<skey_t>& curr = right[i];\n		cout << \"{ \";\n\n		for(set<skey_t>::const_iterator it = curr.begin(); it!=curr.end(); it++)\n			cout << *it << \" \";\n\n		cout << \"} \";\n	}\n\n	return out;\n}\n\n\ntypedef map<skey_t, skey_t> clique_map_t;\n\nfsm reduce(fsm& orig, const cover_t& X){\n	fsm temp;\n\n	/* Compute name reassignments */\n	clique_map_t clique_map;\n	for(int i=0; i<X.size(); i++){\n		state& new_state = temp.add_state();\n		skey_t new_key = new_state.get_key();\n		for(set<skey_t>::const_iterator it = X[i].begin(); it!=X[i].end(); it++){\n			clique_map[*it] = new_key;\n			new_state.add_io_map(orig.find_state(*it));\n		}\n	}\n\n	state_map_t& sm = temp.get_state_map();\n	for(state_map_t::iterator it = sm.begin(); it!=sm.end(); it++){\n		state& curr = it->second;\n		io_map_t& im = curr.get_io_map();\n\n		for(io_map_t::iterator jt = im.begin(); jt!=im.end(); jt++){\n			jt->second.state = clique_map[jt->second.state];\n		}\n	}\n\n	temp.set_initial_state(clique_map[orig.get_initial_state()]);\n\n	return temp;\n}\n\n\nbool add_to_clique_symmetric(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat){\n	//cout << \"Adding \" << new_entry << \" to clique (\" << new_clique << \").\\n\";\n\n	for(set<skey_t>::iterator it = new_clique.begin(); it!=new_clique.end(); it++){	\n		compat_t::const_iterator mi = compat.find(*it);\n\n		const set<skey_t>& kr = mi->second;\n\n		if(kr.find(new_entry)==kr.end())\n			return false;\n	}\n\n	new_clique.insert(new_entry);\n	return true;\n}\n\nbool add_to_clique(skey_t new_entry, set<skey_t>& new_clique, const compat_t& compat){\n	//cout << \"Adding \" << new_entry << \" to clique (\" << new_clique << \").\\n\";\n\n	compat_t::const_iterator mi = compat.find(new_entry);\n	const set<skey_t>& kc = mi->second;\n\n	for(set<skey_t>::iterator it = new_clique.begin(); it!=new_clique.end(); it++){	\n		compat_t::const_iterator mi = compat.find(*it);\n\n		const set<skey_t>& kr = mi->second;\n\n		if(kr.find(new_entry)==kr.end() && kc.find(*it)==kc.end())\n			return false;\n	}\n\n	new_clique.insert(new_entry);\n	return true;\n}\n\nvoid symmetrize(compat_t& compat){\n	for(compat_t::iterator it = compat.begin(); it!=compat.end(); it++){\n		skey_t curr_key = it->first;\n		set<skey_t>& curr_set = it->second;\n		for(set<skey_t>::iterator jt = curr_set.begin(); jt!=curr_set.end(); jt++){\n			set<skey_t>& neighbor_set = compat[*jt];\n\n			neighbor_set.insert(curr_key);\n		}\n	}\n}\n\nbool verify_cover(compat_t& ct, cover_t& X){\n	int cover_size = 0;\n	// cout << endl;\n	for(int i=0; i<X.size(); i++){\n		// cout << X[i].size() << \" \";\n		cover_size += X[i].size();\n	}\n	// cout << endl;\n\n	return (cover_size==ct.size());\n}\n\nfloat density(compat_t& compat){\n	symmetrize(compat);\n\n	int count = 0;\n	for(compat_t::const_iterator it = compat.begin(); it!=compat.end(); it++){\n		count+= it->second.size();\n	}\n\n	return count/((float) compat.size()*compat.size());\n}",
-			"file": "src/fsm.cpp",
-			"file_size": 10131,
-			"file_write_time": 130575715230455168,
+			"file": "src/main.cpp",
 			"settings":
 			{
-				"buffer_size": 9641,
+				"buffer_size": 6306,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/pathological_tree.cpp",
+			"file": "src/reduce_greedy.cpp",
 			"settings":
 			{
-				"buffer_size": 1639,
+				"buffer_size": 1332,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/poisson_fsm.cpp",
+			"file": "src/reduce_exact.cpp",
 			"settings":
 			{
-				"buffer_size": 1427,
+				"buffer_size": 2992,
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/reduce_alberto.cpp",
+			"settings":
+			{
+				"buffer_size": 5939,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 1162,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "1454-gdb-show interpreter\n=thread-group-added,id=\"i1\"\n~\"GNU gdb (Ubuntu 7.7-0ubuntu3.1) 7.7\\n\"\n~\"Copyright (C) 2014 Free Software Foundation, Inc.\\n\"\n~\"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\\nThis is free software: you are free to change and redistribute it.\\nThere is NO WARRANTY, to the extent permitted by law.  Type \\\"show copying\\\"\\nand \\\"show warranty\\\" for details.\\n\"\n~\"This GDB was configured as \\\"x86_64-linux-gnu\\\".\\nType \\\"show configuration\\\" for configuration details.\"\n~\"\\nFor bug reporting instructions, please see:\\n\"\n~\"<http://www.gnu.org/software/gdb/bugs/>.\\n\"\n~\"Find the GDB manual and other documentation resources online at:\\n<http://www.gnu.org/software/gdb/documentation/>.\\n\"\n~\"For help, type \\\"help\\\".\\n\"\n~\"Type \\\"apropos word\\\" to search for commands related to \\\"word\\\"...\\n\"\n=cmd-param-changed,param=\"history save\",value=\"on\"\n=cmd-param-changed,param=\"print pretty\",value=\"on\"\n=cmd-param-changed,param=\"print object\",value=\"on\"\n=cmd-param-changed,param=\"print vtbl\",value=\"on\"\n=cmd-param-changed,param=\"demangle-style\",value=\"gnu-v3\"\n~\"Reading symbols from ./rep-redux...\"\n~\"done.\\n\"\n(gdb)\n1454^error,msg=\"Undefined show command: \\\"interpreter\\\".  Try \\\"help show\\\".\"\n(gdb)\n1455-inferior-tty-set /tmp/tmpi8raxg\n1455^done\n(gdb)\n1456-gdb-set target-async 1\n1457-gdb-set pagination off\n1456^done\n(gdb)\n1457^done\n(gdb)\n1458-gdb-set disassembly-flavor intel\n1458^done\n1459-break-insert \"\\\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\\\":234\"\n(gdb)\n1459^done,bkpt={number=\"1\",type=\"breakpoint\",disp=\"keep\",enabled=\"y\",addr=\"0x0000000000451aa3\",func=\"cover_t::verify()\",file=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",fullname=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",line=\"234\",thread-groups=[\"i1\"],times=\"0\",original-location=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp:234\"}\n(gdb)\n1460-exec-run\n=thread-group-started,id=\"i1\",pid=\"10304\"\n=thread-created,id=\"1\",group-id=\"i1\"\n1460^running\n*running,thread-id=\"all\"\n=library-loaded,id=\"/lib64/ld-linux-x86-64.so.2\",target-name=\"/lib64/ld-linux-x86-64.so.2\",host-name=\"/lib64/ld-linux-x86-64.so.2\",symbols-loaded=\"0\",thread-group=\"i1\"\n(gdb)\n=library-loaded,id=\"/usr/lib/x86_64-linux-gnu/libstdc++.so.6\",target-name=\"/usr/lib/x86_64-linux-gnu/libstdc++.so.6\",host-name=\"/usr/lib/x86_64-linux-gnu/libstdc++.so.6\",symbols-loaded=\"0\",thread-group=\"i1\"\n=library-loaded,id=\"/lib/x86_64-linux-gnu/libm.so.6\",target-name=\"/lib/x86_64-linux-gnu/libm.so.6\",host-name=\"/lib/x86_64-linux-gnu/libm.so.6\",symbols-loaded=\"0\",thread-group=\"i1\"\n=library-loaded,id=\"/lib/x86_64-linux-gnu/libgcc_s.so.1\",target-name=\"/lib/x86_64-linux-gnu/libgcc_s.so.1\",host-name=\"/lib/x86_64-linux-gnu/libgcc_s.so.1\",symbols-loaded=\"0\",thread-group=\"i1\"\n=library-loaded,id=\"/lib/x86_64-linux-gnu/libc.so.6\",target-name=\"/lib/x86_64-linux-gnu/libc.so.6\",host-name=\"/lib/x86_64-linux-gnu/libc.so.6\",symbols-loaded=\"0\",thread-group=\"i1\"\n&\"warning: File \\\"/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.20-gdb.py\\\" auto-loading has been declined by your `auto-load safe-path' set to \\\"$debugdir:$datadir/auto-load\\\".\\n\"\n~\"To enable execution of this file add\\n\\tadd-auto-load-safe-path /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.20-gdb.py\\nline to your configuration file \\\"/home/josh/.gdbinit\\\".\\nTo completely disable this security protection add\\n\\tset auto-load safe-path /\\nline to your configuration file \\\"/home/josh/.gdbinit\\\".\\nFor more information about this security protection see the\\n\\\"Auto-loading safe path\\\" section in the GDB manual.  E.g., run from the shell:\\n\\tinfo \\\"(gdb)Auto-loading safe path\\\"\\n\"\n=breakpoint-modified,bkpt={number=\"1\",type=\"breakpoint\",disp=\"keep\",enabled=\"y\",addr=\"0x0000000000451aa3\",func=\"cover_t::verify()\",file=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",fullname=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",line=\"234\",thread-groups=[\"i1\"],times=\"1\",original-location=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp:234\"}\n*stopped,reason=\"breakpoint-hit\",disp=\"keep\",bkptno=\"1\",frame={addr=\"0x0000000000451aa3\",func=\"cover_t::verify\",args=[{name=\"this\",value=\"0x7fffffffdc60\"}],file=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",fullname=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",line=\"234\"},thread-id=\"1\",stopped-threads=\"all\",core=\"0\"\n1461-thread-select 1\n1461^done,new-thread-id=\"1\",frame={level=\"0\",addr=\"0x0000000000451aa3\",func=\"cover_t::verify\",args=[{name=\"this\",value=\"0x7fffffffdc60\"}],file=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",fullname=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",line=\"234\"}\n(gdb)\n1462-stack-info-frame\n1462^done,frame={level=\"0\",addr=\"0x0000000000451aa3\",func=\"cover_t::verify\",file=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",fullname=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",line=\"234\"}\n(gdb)\n1463-stack-list-frames\n1463^done,stack=[frame={level=\"0\",addr=\"0x0000000000451aa3\",func=\"cover_t::verify\",file=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",fullname=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",line=\"234\"},frame={level=\"1\",addr=\"0x000000000043ce2a\",func=\"main\",file=\"/home/josh/git/rep-redux/cpp/src/main.cpp\",fullname=\"/home/josh/git/rep-redux/cpp/src/main.cpp\",line=\"179\"}]\n(gdb)\n1464-stack-list-arguments 1\n1464^done,stack-args=[frame={level=\"0\",args=[{name=\"this\",value=\"0x7fffffffdc60\"}]},frame={level=\"1\",args=[]}]\n(gdb)\n1465-thread-info\n1465^done,threads=[{id=\"1\",target-id=\"process 10304\",name=\"rep-redux\",frame={level=\"0\",addr=\"0x0000000000451aa3\",func=\"cover_t::verify\",args=[{name=\"this\",value=\"0x7fffffffdc60\"}],file=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",fullname=\"/home/josh/git/rep-redux/cpp/src/compatibility.cpp\",line=\"234\"},state=\"stopped\",core=\"0\"}],current-thread-id=\"1\"\n(gdb)\n1466-thread-list-ids\n1466^done,thread-ids={thread-id=\"1\"},current-thread-id=\"1\",number-of-threads=\"1\"\n(gdb)\n1467-var-delete var1\n1468-var-delete var2\n1469-var-delete var3\n1470-var-delete var4\n1467^error,msg=\"Variable object not found\"\n1471-var-delete var5\n(gdb)\n1468^error,msg=\"Variable object not found\"\n(gdb)\n1469^error,msg=\"Variable object not found\"\n1472-var-delete var6\n(gdb)\n1473-var-delete var7\n1470^error,msg=\"Variable object not found\"\n1474-var-delete var8\n(gdb)\n1475-var-delete var9\n1471^error,msg=\"Variable object not found\"\n1476-stack-list-arguments 0 0 0\n(gdb)\n1472^error,msg=\"Variable object not found\"\n(gdb)\n1473^error,msg=\"Variable object not found\"\n(gdb)\n1474^error,msg=\"Variable object not found\"\n(gdb)\n1475^error,msg=\"Variable object not found\"\n(gdb)\n1476^done,stack-args=[frame={level=\"0\",args=[name=\"this\"]}]\n(gdb)\n1477-var-create - * this\n1477^done,name=\"var1\",numchild=\"1\",value=\"0x7fffffffdc60\",type=\"cover_t * const\",thread-id=\"1\",has_more=\"0\"\n(gdb)\n1478-stack-list-locals 0\n1478^done,locals=[name=\"j2\",name=\"j1\",name=\"i\"]\n(gdb)\n1479-var-create - * j2\n1479^done,name=\"var2\",numchild=\"0\",value=\"0\",type=\"int\",thread-id=\"1\",has_more=\"0\"\n(gdb)\n1480-var-create - * j1\n1480^done,name=\"var3\",numchild=\"0\",value=\"3\",type=\"int\",thread-id=\"1\",has_more=\"0\"\n(gdb)\n1481-var-create - * i\n1481^done,name=\"var4\",numchild=\"0\",value=\"0\",type=\"int\",thread-id=\"1\",has_more=\"0\"\n(gdb)\n1482p j1\n&\"p j1\\n\"\n~\"$1 = 3\"\n~\"\\n\"\n1482^done\n(gdb)\n1483p cover[j1]\n&\"p cover[j1]\\n\"\n~\"$2 = (int &) @0x67566c: 5\"\n~\"\\n\"\n1483^done\n(gdb)\n1484p cover[j2]\n&\"p cover[j2]\\n\"\n~\"$3 = (int &) @0x675660: 0\"\n~\"\\n\"\n1484^done\n(gdb)\n1485compat->adj[0][5]\n&\"compat->adj[0][5]\\n\"\n&\"Undefined command: \\\"compat->adj\\\".  Try \\\"help\\\".\\n\"\n1485^error,msg=\"Undefined command: \\\"compat->adj\\\".  Try \\\"help\\\".\"\n(gdb)\n1486(*compat)(0,5)\n&\"(*compat)(0,5)\\n\"\n&\"Undefined command: \\\"\\\".  Try \\\"help\\\".\\n\"\n1486^error,msg=\"Undefined command: \\\"\\\".  Try \\\"help\\\".\"\n(gdb)\n1487p compat->adj[0][5]\n&\"p compat->adj[0][5]\\n\"\n~\"$4 = (int &) @0x7ffff75ab7cc: 0\"\n~\"\\n\"\n1487^done\n(gdb)\n1488(*compat)(5,0)\n&\"(*compat)(5,0)\\n\"\n&\"Undefined command: \\\"\\\".  Try \\\"help\\\".\\n\"\n1488^error,msg=\"Undefined command: \\\"\\\".  Try \\\"help\\\".\"\n(gdb)\n1489p compat->adj[5][0]\n&\"p compat->adj[5][0]\\n\"\n~\"$5 = (int &) @0x675390: 0\"\n~\"\\n\"\n1489^done\n(gdb)\n1490(*compat)(5,5)\n&\"(*compat)(5,5)\\n\"\n&\"Undefined command: \\\"\\\".  Try \\\"help\\\".\\n\"\n1490^error,msg=\"Undefined command: \\\"\\\".  Try \\\"help\\\".\"\n(gdb)\n1491p compat->adj[5][5]\n&\"p compat->adj[5][5]\\n\"\n~\"$6 = (int &) @0x6753a4: 0\"\n~\"\\n\"\n1491^done\n(gdb)\n1492(*compat)(1,1)\n&\"(*compat)(1,1)\\n\"\n&\"Undefined command: \\\"\\\".  Try \\\"help\\\".\\n\"\n1492^error,msg=\"Undefined command: \\\"\\\".  Try \\\"help\\\".\"\n(gdb)\n1493p compat->adj[1][1]\n&\"p compat->adj[1][1]\\n\"\n~\"$7 = (int &) @0x6753d4: 0\"\n~\"\\n\"\n1493^done\n(gdb)\n",
+			"settings":
+			{
+				"buffer_size": 8580,
+				"line_ending": "Unix",
+				"name": "GDB Session",
+				"read_only": true,
+				"scratch": true
+			}
+		},
+		{
+			"contents": "+cover_t * const this = 0x7fffffffdc60\n int j2 = 0\n int j1 = 3\n int i = 0\n",
+			"settings":
+			{
+				"buffer_size": 74,
+				"line_ending": "Unix",
+				"name": "GDB Variables",
+				"read_only": true,
+				"scratch": true
+			}
+		},
+		{
+			"contents": "cover_t::verify(this = 0x7fffffffdc60,);\nmain();\n",
+			"settings":
+			{
+				"buffer_size": 49,
+				"line_ending": "Unix",
+				"name": "GDB Callstack",
+				"read_only": true,
+				"scratch": true
+			}
+		},
+		{
+			"contents": "001 -    stopped - cover_t::verify(this = 0x7fffffffdc60);\n",
+			"settings":
+			{
+				"buffer_size": 59,
+				"line_ending": "Unix",
+				"name": "GDB Threads",
+				"read_only": true,
+				"scratch": true
+			}
+		},
+		{
+			"contents": "1 - /home/josh/git/rep-redux/cpp/src/compatibility.cpp:234\n",
+			"settings":
+			{
+				"buffer_size": 59,
+				"line_ending": "Unix",
+				"name": "GDB Breakpoints",
+				"read_only": true,
+				"scratch": true
 			}
 		}
 	],
@@ -495,25 +542,31 @@
 		"/home/josh/git/rep-redux/cpp/data",
 		"/home/josh/git/rep-redux/cpp/include",
 		"/home/josh/git/rep-redux/cpp/src",
-		"/home/josh/git/rep-redux/cpp/thirdparty",
-		"/home/josh/git/rep-redux/cpp/thirdparty/cliquer-1.21"
+		"/home/josh/git/rep-redux/cpp/thirdparty"
 	],
 	"file_history":
 	[
+		"/usr/include/c++/4.6/bits/stl_vector.h",
+		"/build/buildd/eglibc-2.19/nptl/sysdeps/unix/sysv/linux/raise.c",
+		"/home/josh/git/rep-redux/cpp/CMakeLists.txt",
+		"/home/josh/git/rep-redux/cpp/thirdparty/cliquer-1.21/graph.c",
+		"/home/josh/git/rep-redux/cpp/src/Graph.cpp",
+		"/home/josh/git/rep-redux/cpp/src/reduce_greedy.cpp",
+		"/home/josh/git/rep-redux/cpp/src/reduce_censi.cpp",
+		"/home/josh/git/rep-redux/cpp/src/main.cpp",
+		"/home/josh/git/rep-redux/cpp/src/reduce_alberto.cpp",
+		"/home/josh/git/rep-redux/cpp/src/poisson_fsm.cpp",
+		"/home/josh/git/rep-redux/cpp/src/pathological_tree.cpp",
+		"/home/josh/git/rep-redux/cpp/src/fsm.cpp",
+		"/home/josh/git/rep-redux/cpp/src/reduce_josh.cpp",
+		"/home/josh/git/rep-redux/cpp/include/Graph.h",
+		"/home/josh/git/rep-redux/cpp/src/reduce_exact.cpp",
 		"/home/josh/git/rep-redux/cpp/build/CMakeFiles/2.8.12.2/CompilerIdC/CMakeCCompilerId.c",
 		"/home/josh/git/rep-redux/cpp/build/CMakeFiles/progress.marks",
-		"/home/josh/git/rep-redux/cpp/CMakeLists.txt",
-		"/home/josh/git/rep-redux/cpp/src/fsm.cpp",
-		"/home/josh/git/rep-redux/cpp/src/Graph.cpp",
 		"/home/josh/git/rep-redux/cpp/stats/data-02.txt",
-		"/home/josh/git/rep-redux/cpp/src/reduce_greedy.cpp",
-		"/home/josh/git/rep-redux/cpp/src/poisson_fsm.cpp",
-		"/home/josh/git/rep-redux/cpp/src/reduce_censi.cpp",
 		"/home/josh/git/rep-redux/cpp/src/state.cpp",
 		"/home/josh/git/rep-redux/cpp/src/decision_tree.cpp",
 		"/home/josh/git/rep-redux/cpp/rep-redux.sublime-project",
-		"/build/buildd/eglibc-2.19/nptl/sysdeps/unix/sysv/linux/raise.c",
-		"/home/josh/git/rep-redux/cpp/src/reduce_exact.cpp",
 		"/home/josh/git/rep-redux/cpp/src/reduce_josh_exhaustive.cpp",
 		"/home/josh/git/rep-redux/cpp/src/emulation.cpp",
 		"/usr/include/c++/4.6/bits/stl_tree.h",
@@ -545,6 +598,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"cout <<",
+			"cout<<",
+			"Compat:",
+			"compat->",
 			"cout",
 			"cout << endl",
 			"operator<<",
@@ -588,6 +645,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"compat.",
 			" ",
 			"",
 			";",
@@ -615,24 +673,24 @@
 	"groups":
 	[
 		{
-			"selected": 7,
+			"selected": 6,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/main.cpp",
+					"file": "src/compatibility.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5440,
+						"buffer_size": 8821,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								347,
-								347
+								1486,
+								1486
 							]
 						],
 						"settings":
@@ -641,32 +699,31 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 135.0,
+						"translation.y": 791.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "src/reduce_censi.cpp",
+					"file": "src/reduce_josh.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2955,
+						"buffer_size": 727,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								79,
-								79
+								255,
+								255
 							]
 						],
 						"settings":
 						{
-							"spell_check": false,
 							"syntax": "Packages/C++/C++.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
@@ -679,49 +736,48 @@
 				},
 				{
 					"buffer": 2,
-					"file": "src/reduce_alberto.cpp",
-					"semi_transient": false,
+					"file": "include/fsm.h",
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 3849,
+						"buffer_size": 5863,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2858,
-								2858
+								912,
+								912
 							]
 						],
 						"settings":
 						{
-							"auto_name": "// find  maximum independent set",
 							"syntax": "Packages/C++/C++.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
-						"translation.x": 0.0,
-						"translation.y": 1710.0,
+						"translation.x": -0.0,
+						"translation.y": 3060.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "src/reduce_exact.cpp",
+					"file": "src/main.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2769,
+						"buffer_size": 6306,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1189,
-								1189
+								3652,
+								3652
 							]
 						],
 						"settings":
@@ -730,57 +786,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 585.0,
+						"translation.y": 1836.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
 					"buffer": 4,
-					"file": "include/Graph.h",
+					"file": "src/reduce_greedy.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2920,
+						"buffer_size": 1332,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 9,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "src/reduce_josh.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 727,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								42,
-								42
+								176,
+								176
 							]
 						],
 						"settings":
@@ -796,20 +822,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
-					"file": "include/fsm.h",
+					"buffer": 5,
+					"file": "src/reduce_exact.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3341,
+						"buffer_size": 2992,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2958,
-								2958
+								1598,
+								1598
 							]
 						],
 						"settings":
@@ -818,27 +844,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1711.0,
+						"translation.y": 561.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
-					"file": "src/fsm.cpp",
+					"buffer": 6,
+					"file": "src/reduce_alberto.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9641,
+						"buffer_size": 5939,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								464,
-								464
+								3797,
+								3797
 							]
 						],
 						"settings":
@@ -847,35 +873,67 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 405.0,
+						"translation.y": 1729.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
-					"file": "src/pathological_tree.cpp",
+					"buffer": 7,
+					"file": "CMakeLists.txt",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1639,
+						"buffer_size": 1162,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								247,
-								247
+								118,
+								118
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/CMake/CMake.tmLanguage"
 						},
 						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 8,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8580,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8580,
+								8580
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/SublimeGDB/gdb_session.tmLanguage"
+						},
+						"translation.x": 388.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
@@ -884,54 +942,131 @@
 				},
 				{
 					"buffer": 9,
-					"file": "src/poisson_fsm.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1427,
+						"buffer_size": 74,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								401,
-								401
+								74,
+								74
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/C++/C++.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 12,
 					"type": "text"
 				}
 			]
 		},
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 10,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 49,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								49,
+								49
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				}
 			]
 		},
 		{
+			"selected": 1,
 			"sheets":
 			[
-			]
-		},
-		{
-			"sheets":
-			[
+				{
+					"buffer": 11,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 59,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								59,
+								59
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 59,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								59,
+								59
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 25.0
 	},
 	"input":
 	{
@@ -976,14 +1111,14 @@
 		"rows":
 		[
 			0.0,
-			0.75,
+			0.877055306428,
 			1.0
 		]
 	},
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 222.0
+		"height": 278.0
 	},
 	"output.find_results":
 	{
@@ -992,7 +1127,7 @@
 	"project": "rep-redux.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 64.0
 	},
 	"save_all_on_build": true,
 	"select_file":
